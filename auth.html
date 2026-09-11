@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Credett | Enterprise Authentication & KYB Onboarding</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
+  <link rel="stylesheet" href="shared/style.css">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-dark": "#0B0F17",
+            "primary": "rgb(109, 87, 227)",
+            "primary-hover": "#5d44d6",
+            "primary-container": "#f3f1fd",
+            "blue": {
+              50: "#f5f3ff",
+              100: "#ede9fe",
+              200: "#ddd6fe",
+              300: "#c4b5fd",
+              400: "#a78bfa",
+              500: "#8b5cf6",
+              600: "rgb(109, 87, 227)",
+              700: "#5d44d6",
+              800: "#4f36c0",
+              900: "#372882"
+            }
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-slate-50 font-body-md text-slate-900 min-h-screen flex flex-col antialiased pb-24">
+
+  <!-- Main Institutional Navigation -->
+  <header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/90 shadow-xs">
+    <div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div
+          class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-all shadow-xs">
+          <span class="material-symbols-outlined text-[24px]">shield_locked</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl font-bold tracking-tight text-slate-900 font-headline-md leading-none">CREDETT</span>
+          <span class="text-[10px] tracking-widest uppercase text-blue-600 font-mono font-bold mt-0.5">Web3
+            Payments</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold">
+        <a class="text-slate-600 hover:text-slate-900 transition-colors" href="index.html#features">Infrastructure</a>
+        <a class="text-slate-600 hover:text-slate-900 transition-colors" href="index.html#simulator">Live Simulator</a>
+        <a class="text-slate-600 hover:text-slate-900 transition-colors" href="index.html#calculator">Fee Calculator</a>
+        <a class="text-slate-600 hover:text-slate-900 transition-colors" href="merchant-developers.html">Developers</a>
+        <a class="text-slate-600 hover:text-slate-900 transition-colors" href="index.html#security">Security</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <button class="text-sm font-semibold text-slate-700 hover:text-slate-900 px-4 py-2 transition-colors"
+          onclick="setAuthTab('login')">
+          Sign In
+        </button>
+        <button
+          class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2"
+          onclick="setAuthTab('register')">
+          <span>Get Started</span>
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main
+    class="w-full pt-20 flex-grow bg-slate-50 relative overflow-hidden flex flex-col justify-center items-center py-12 px-4 sm:px-6">
+    <!-- Subtle enterprise ambient glow and grid pattern -->
+    <div
+      class="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f015_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f015_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none">
+    </div>
+    <div
+      class="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-blue-100/60 rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <div class="w-full max-w-2xl relative z-10 my-4">
+      <!-- Top Mode Switcher (Login vs Register) -->
+      <div class="flex justify-center mb-6">
+        <div class="inline-flex p-1 bg-slate-200/90 rounded-xl border border-slate-300 shadow-inner">
+          <button class="px-6 py-2 text-sm font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900"
+            id="auth-tab-login" onclick="setAuthTab('login')">
+            Sign In
+          </button>
+          <button class="px-6 py-2 text-sm font-semibold rounded-lg transition-all bg-white text-blue-700 shadow-sm"
+            id="auth-tab-register" onclick="setAuthTab('register')">
+            Register Organization
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepper Navigation (for Register Flow) -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-6 transition-all"
+        id="onboarding-stepper">
+        <div class="flex items-center justify-between relative">
+          <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+          <!-- Step 1 Indicator -->
+          <button
+            class="relative z-10 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-600 text-blue-700 font-semibold text-xs transition-all"
+            id="step-btn-1" onclick="goToStep(1)">
+            <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"
+              id="step-badge-1">1</span>
+            <span class="hidden sm:inline">Account Setup</span>
+          </button>
+          <!-- Step 2 Indicator -->
+          <button
+            class="relative z-10 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 font-medium text-xs transition-all hover:border-slate-400"
+            id="step-btn-2" onclick="goToStep(2)">
+            <span
+              class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold"
+              id="step-badge-2">2</span>
+            <span class="hidden sm:inline">OTP Verification</span>
+          </button>
+          <!-- Step 3 Indicator -->
+          <button
+            class="relative z-10 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 font-medium text-xs transition-all hover:border-slate-400"
+            id="step-btn-3" onclick="goToStep(3)">
+            <span
+              class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold"
+              id="step-badge-3">3</span>
+            <span class="hidden sm:inline">KYB Verification</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Card Container -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+
+        <!-- ============================================== -->
+        <!-- VIEW: LOGIN                                    -->
+        <!-- ============================================== -->
+        <div class="p-8 sm:p-10 hidden" id="view-login">
+          <div class="text-center mb-8">
+            <div
+              class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-600 mb-3 border border-blue-100">
+              <span class="material-symbols-outlined text-[26px]">shield_locked</span>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Welcome back</h1>
+            <p class="text-sm text-slate-500 mt-1">Sign in to your Credett Enterprise Console</p>
+          </div>
+
+          <button
+            class="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm font-semibold transition-colors border border-slate-200 shadow-sm mb-6"
+            type="button" onclick="performDirectLogin()">
+            <svg class="w-4 h-4" viewBox="0 0 24 24">
+              <path
+                d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.9C6.2 7.1 8.9 5 12 5z"
+                fill="#EA4335"></path>
+              <path d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"
+                fill="#4285F4"></path>
+              <path d="M5.3 14.7c-.2-.7-.4-1.5-.4-2.7s.2-2 .4-2.7L1.6 6.4C.6 8.4 0 10.6 0 13s.6 4.6 1.6 6.6l3.7-2.9z"
+                fill="#FBBC05"></path>
+              <path
+                d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5.3L1.6 15.9C3.5 19.7 7.4 23 12 23z"
+                fill="#34A853"></path>
+            </svg>
+            Continue with Google Workspace
+          </button>
+
+          <div class="flex items-center my-6">
+            <div class="flex-grow h-px bg-slate-200"></div>
+            <span class="px-3 text-xs text-slate-400 font-medium uppercase tracking-wider">or sign in with
+              credentials</span>
+            <div class="flex-grow h-px bg-slate-200"></div>
+          </div>
+
+          <form class="space-y-4" onsubmit="event.preventDefault(); performDirectLogin();">
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-slate-700 block">Work Email</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span class="material-symbols-outlined text-[18px]">mail</span>
+                </span>
+                <input
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-900 pl-10 pr-4 py-2.5 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+                  id="login-email" placeholder="name@company.com" type="email" required>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center">
+                <label class="text-xs font-semibold text-slate-700 block">Password</label>
+                <a class="text-xs font-medium text-blue-600 hover:text-blue-700" href="#"
+                  onclick="CredettToast.show('Password reset link dispatched to your work email.', 'info')">Forgot
+                  password?</a>
+              </div>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span class="material-symbols-outlined text-[18px]">lock</span>
+                </span>
+                <input
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-900 pl-10 pr-10 py-2.5 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+                  id="login-password" placeholder="••••••••••••" type="password" required>
+              </div>
+            </div>
+
+            <button
+              class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 text-sm"
+              type="submit">
+              <span>Sign in to Merchant Console</span>
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VIEW: STEP 1 - CREATE ACCOUNT (REGISTER)       -->
+        <!-- ============================================== -->
+        <div class="p-8 sm:p-10" id="view-step-1">
+          <div class="text-center mb-8">
+            <div
+              class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-600 mb-3 border border-blue-100">
+              <span class="material-symbols-outlined text-[26px]">domain_add</span>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Create Enterprise Merchant Account</h1>
+            <p class="text-sm text-slate-500 mt-1">Deploy high-throughput crypto payment gateways with Fireblocks vaults
+            </p>
+          </div>
+
+          <form class="space-y-4" onsubmit="event.preventDefault(); goToStep(2);">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-700 block">Legal Entity Name <span
+                    class="text-red-500">*</span></label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                    <span class="material-symbols-outlined text-[18px]">business</span>
+                  </span>
+                  <input
+                    class="w-full bg-slate-50 border border-slate-300 text-slate-900 pl-10 pr-4 py-2.5 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    id="input-legal-name" placeholder="e.g. Acme Financial Technologies Inc." required type="text">
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-700 block">Incorporation Jurisdiction <span
+                    class="text-red-500">*</span></label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                    <span class="material-symbols-outlined text-[18px]">flag</span>
+                  </span>
+                  <select
+                    class="w-full bg-slate-50 border border-slate-300 text-slate-900 pl-10 pr-8 py-2.5 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    <option value="" disabled selected>Select country / jurisdiction</option>
+                    <option>United States (Delaware C-Corp)</option>
+                    <option>United Kingdom (Ltd)</option>
+                    <option>Singapore (Pte Ltd)</option>
+                    <option>Switzerland (GmbH / AG)</option>
+                    <option>United Arab Emirates (ADGM / DIFC)</option>
+                    <option>India (Private Limited)</option>
+                    <option>Germany (GmbH)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-slate-700 block">Corporate Work Email <span
+                  class="text-red-500">*</span></label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span class="material-symbols-outlined text-[18px]">mail</span>
+                </span>
+                <input
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-900 pl-10 pr-4 py-2.5 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  id="input-corporate-email" placeholder="e.g. treasury@yourcompany.com" required type="email">
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-slate-700 block">Password <span
+                  class="text-red-500">*</span></label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span class="material-symbols-outlined text-[18px]">lock</span>
+                </span>
+                <input
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-900 pl-10 pr-10 py-2.5 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  placeholder="Minimum 12 characters (letters, digits, symbols)" required type="password" minlength="6">
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-blue-50/70 border border-blue-200/80 flex items-start gap-3">
+              <span class="material-symbols-outlined text-blue-600 text-[20px] shrink-0 mt-0.5">verified_user</span>
+              <div class="text-xs text-slate-600 leading-relaxed">
+                By continuing, you agree to Credett's <a class="text-blue-700 font-semibold underline" href="#">Merchant
+                  Terms</a> and acknowledge automated screening via <span
+                  class="font-semibold text-slate-800">Fireblocks</span> compliance engines.
+              </div>
+            </div>
+
+            <button
+              class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 text-sm"
+              type="submit">
+              <span>Continue to Email Verification</span>
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VIEW: STEP 2 - OTP VERIFICATION                -->
+        <!-- ============================================== -->
+        <div class="p-8 sm:p-10 hidden" id="view-step-2">
+          <div class="text-center mb-8">
+            <div
+              class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-600 mb-3 border border-blue-100">
+              <span class="material-symbols-outlined text-[26px]">mark_email_unread</span>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Verify Corporate Email</h1>
+            <p class="text-sm text-slate-500 mt-1">
+              We sent a 6-digit cryptographic confirmation token to <br>
+              <span class="font-semibold text-slate-900" id="otp-target-email">your.email@company.com</span>
+            </p>
+          </div>
+
+          <form class="space-y-6" onsubmit="event.preventDefault(); goToStep(3);">
+            <!-- 6-digit OTP Inputs -->
+            <div class="flex justify-center items-center gap-2 sm:gap-3" id="otp-container">
+              <input
+                class="w-11 h-12 sm:w-12 sm:h-14 text-center font-bold text-xl sm:text-2xl text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 otp-digit"
+                maxlength="1" type="text" placeholder="•" oninput="shiftOtpFocus(this, 1)"
+                onkeydown="handleOtpBackspace(event, this, 0)" autofocus>
+              <input
+                class="w-11 h-12 sm:w-12 sm:h-14 text-center font-bold text-xl sm:text-2xl text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 otp-digit"
+                maxlength="1" type="text" placeholder="•" oninput="shiftOtpFocus(this, 2)"
+                onkeydown="handleOtpBackspace(event, this, 1)">
+              <input
+                class="w-11 h-12 sm:w-12 sm:h-14 text-center font-bold text-xl sm:text-2xl text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 otp-digit"
+                maxlength="1" type="text" placeholder="•" oninput="shiftOtpFocus(this, 3)"
+                onkeydown="handleOtpBackspace(event, this, 2)">
+              <span class="text-slate-400 font-bold text-lg">-</span>
+              <input
+                class="w-11 h-12 sm:w-12 sm:h-14 text-center font-bold text-xl sm:text-2xl text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 otp-digit"
+                maxlength="1" type="text" placeholder="•" oninput="shiftOtpFocus(this, 4)"
+                onkeydown="handleOtpBackspace(event, this, 3)">
+              <input
+                class="w-11 h-12 sm:w-12 sm:h-14 text-center font-bold text-xl sm:text-2xl text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 otp-digit"
+                maxlength="1" type="text" placeholder="•" oninput="shiftOtpFocus(this, 5)"
+                onkeydown="handleOtpBackspace(event, this, 4)">
+              <input
+                class="w-11 h-12 sm:w-12 sm:h-14 text-center font-bold text-xl sm:text-2xl text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 otp-digit"
+                maxlength="1" type="text" placeholder="•" oninput="shiftOtpFocus(this, 6)"
+                onkeydown="handleOtpBackspace(event, this, 5)">
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-500 px-2">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-emerald-600">timer</span>
+                <span>Resend code in <strong class="text-slate-800 font-semibold" id="otp-timer">59s</strong></span>
+              </div>
+              <button class="text-blue-600 font-semibold hover:underline" type="button" onclick="goToStep(1)">Change
+                email</button>
+            </div>
+
+            <div class="pt-2 space-y-3">
+              <button
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 text-sm"
+                type="submit">
+                <span>Verify Token & Proceed to KYB</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </button>
+              <button
+                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-lg transition-colors text-xs flex items-center justify-center gap-1.5"
+                onclick="goToStep(1)" type="button">
+                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <span>Back to Account Setup</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VIEW: STEP 3 - KYB BUSINESS VERIFICATION       -->
+        <!-- ============================================== -->
+        <div class="p-8 sm:p-10 hidden" id="view-step-3">
+          <div class="text-center mb-6">
+            <div
+              class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-600 mb-2 border border-blue-100">
+              <span class="material-symbols-outlined text-[26px]">assured_workload</span>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Institutional KYB Verification</h1>
+            <p class="text-sm text-slate-600 mt-1 max-w-lg mx-auto">
+              Comply with global financial regulations and unlock Fireblocks enterprise vault settlement.
+            </p>
+          </div>
+
+          <!-- Trust Bar -->
+          <div
+            class="mb-6 px-4 py-2.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between text-xs text-slate-600">
+            <div class="flex items-center gap-2 font-medium">
+              <span class="material-symbols-outlined text-emerald-600 text-[18px]">verified</span>
+              <span>256-bit Encrypted • SOC-2 Type II Certified • Fireblocks Vault</span>
+            </div>
+            <span class="font-semibold text-blue-700">Audit-Ready</span>
+          </div>
+
+          <form class="space-y-4" onsubmit="event.preventDefault(); submitKYB();">
+            <!-- Hidden file inputs -->
+            <input type="file" id="file-input-1" class="hidden" accept=".pdf,.png,.jpg,.jpeg"
+              onchange="handleFileSelected(1, this)">
+            <input type="file" id="file-input-2" class="hidden" accept=".pdf,.png,.jpg,.jpeg"
+              onchange="handleFileSelected(2, this)">
+            <input type="file" id="file-input-3" class="hidden" accept=".pdf,.png,.jpg,.jpeg"
+              onchange="handleFileSelected(3, this)">
+
+            <!-- Doc 1 -->
+            <div class="border border-slate-200 rounded-xl p-4 bg-white hover:border-blue-400 transition-all shadow-sm">
+              <div class="flex items-start justify-between mb-2">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">badge</span>
+                  </div>
+                  <div>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">1. Commercial Register & Entity
+                      ID</h3>
+                    <p class="text-xs text-slate-500">Certificate of Incorporation or Trade Register extract</p>
+                  </div>
+                </div>
+                <span
+                  class="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200"
+                  id="doc1-badge">
+                  Required
+                </span>
+              </div>
+
+              <!-- Dropzone / File trigger -->
+              <div id="doc1-upload-zone"
+                class="mt-2.5 border-2 border-dashed border-slate-200 hover:border-blue-500 rounded-lg p-3.5 text-center bg-slate-50/50 cursor-pointer transition-all"
+                onclick="triggerFileInput(1)">
+                <span class="material-symbols-outlined text-slate-400 text-[24px]">cloud_upload</span>
+                <p class="text-xs font-semibold text-slate-700 mt-1">Click to browse or drag & drop Certificate</p>
+                <p class="text-[11px] text-slate-400">Supported: PDF, PNG, JPG (up to 25MB)</p>
+              </div>
+
+              <!-- File Preview (hidden until uploaded) -->
+              <div id="doc1-preview"
+                class="hidden mt-2.5 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 text-slate-700 font-medium overflow-hidden">
+                  <span class="material-symbols-outlined text-blue-600 text-[18px]" id="doc1-icon">description</span>
+                  <span id="doc1-filename" class="truncate font-semibold text-slate-900">document.pdf</span>
+                  <span id="doc1-filesize" class="text-slate-400 text-[11px] shrink-0">(0 KB)</span>
+                </div>
+                <button class="text-slate-400 hover:text-red-600 ml-2" type="button" onclick="removeFile(1)">
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Doc 2 -->
+            <div class="border border-slate-200 rounded-xl p-4 bg-white hover:border-blue-400 transition-all shadow-sm">
+              <div class="flex items-start justify-between mb-2">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">signature</span>
+                  </div>
+                  <div>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">2. Authorised Signatory Mandate
+                    </h3>
+                    <p class="text-xs text-slate-500">Board resolution, power of attorney, or passport/ID</p>
+                  </div>
+                </div>
+                <span
+                  class="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200"
+                  id="doc2-badge">
+                  Required
+                </span>
+              </div>
+
+              <!-- Dropzone / File trigger -->
+              <div id="doc2-upload-zone"
+                class="mt-2.5 border-2 border-dashed border-slate-200 hover:border-blue-500 rounded-lg p-3.5 text-center bg-slate-50/50 cursor-pointer transition-all"
+                onclick="triggerFileInput(2)">
+                <span class="material-symbols-outlined text-slate-400 text-[24px]">cloud_upload</span>
+                <p class="text-xs font-semibold text-slate-700 mt-1">Click to browse or drag & drop file here</p>
+                <p class="text-[11px] text-slate-400">Supported: PDF, PNG, JPG (up to 25MB)</p>
+              </div>
+
+              <!-- File Preview (hidden until uploaded) -->
+              <div id="doc2-preview"
+                class="hidden mt-2.5 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 text-slate-700 font-medium overflow-hidden">
+                  <span class="material-symbols-outlined text-indigo-600 text-[18px]" id="doc2-icon">description</span>
+                  <span id="doc2-filename" class="truncate font-semibold text-slate-900">mandate.pdf</span>
+                  <span id="doc2-filesize" class="text-slate-400 text-[11px] shrink-0">(0 KB)</span>
+                </div>
+                <button class="text-slate-400 hover:text-red-600 ml-2" type="button" onclick="removeFile(2)">
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Doc 3 -->
+            <div class="border border-slate-200 rounded-xl p-4 bg-white hover:border-blue-400 transition-all shadow-sm">
+              <div class="flex items-start justify-between mb-2">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">account_tree</span>
+                  </div>
+                  <div>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">3. Ultimate Beneficial Owners
+                      (UBO &gt;25%)</h3>
+                    <p class="text-xs text-slate-500">Shareholding registry, ownership chart, or government declaration
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200"
+                  id="doc3-badge">
+                  Required
+                </span>
+              </div>
+
+              <!-- Dropzone / File trigger -->
+              <div id="doc3-upload-zone"
+                class="mt-2.5 border-2 border-dashed border-slate-200 hover:border-blue-500 rounded-lg p-3.5 text-center bg-slate-50/50 cursor-pointer transition-all"
+                onclick="triggerFileInput(3)">
+                <span class="material-symbols-outlined text-slate-400 text-[24px]">cloud_upload</span>
+                <p class="text-xs font-semibold text-slate-700 mt-1">Click to browse or drag & drop ownership chart</p>
+                <p class="text-[11px] text-slate-400">Certified by Corporate Secretary or Notary</p>
+              </div>
+
+              <!-- File Preview (hidden until uploaded) -->
+              <div id="doc3-preview"
+                class="hidden mt-2.5 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 text-slate-700 font-medium overflow-hidden">
+                  <span class="material-symbols-outlined text-sky-600 text-[18px]" id="doc3-icon">description</span>
+                  <span id="doc3-filename" class="truncate font-semibold text-slate-900">ownership_structure.pdf</span>
+                  <span id="doc3-filesize" class="text-slate-400 text-[11px] shrink-0">(0 KB)</span>
+                </div>
+                <button class="text-slate-400 hover:text-red-600 ml-2" type="button" onclick="removeFile(3)">
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="pt-2 flex flex-col sm:flex-row items-center gap-3">
+              <button
+                class="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 text-sm"
+                type="submit" id="kyb-submit-btn">
+                <span>Submit KYB & Launch Console</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </button>
+              <button
+                class="w-full sm:w-auto px-5 py-3 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-sm transition-colors"
+                type="button" onclick="CredettToast.show('Draft saved to local storage.', 'info')">
+                Save Draft
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Trust Subtitle -->
+      <div class="mt-6 text-center">
+        <p class="text-xs text-slate-500">
+          Non-custodial institutional vault settlement powered by <span
+            class="font-semibold text-slate-800">Fireblocks</span> & <span
+            class="font-semibold text-slate-800">Chainalysis</span>.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script src="shared/app.js"></script>
+  <script>
+    let currentStep = 1;
+    let authMode = 'login';
+    const uploadedFiles = { 1: null, 2: null, 3: null };
+
+    function setAuthTab(mode) {
+      authMode = mode;
+      const loginTab = document.getElementById('auth-tab-login');
+      const registerTab = document.getElementById('auth-tab-register');
+      const stepper = document.getElementById('onboarding-stepper');
+      const viewLogin = document.getElementById('view-login');
+      const viewStep1 = document.getElementById('view-step-1');
+      const viewStep2 = document.getElementById('view-step-2');
+      const viewStep3 = document.getElementById('view-step-3');
+
+      if (mode === 'register') {
+        registerTab.className = 'px-6 py-2 text-sm font-semibold rounded-lg transition-all bg-white text-blue-700 shadow-sm';
+        loginTab.className = 'px-6 py-2 text-sm font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900';
+        stepper.classList.remove('hidden');
+        viewLogin.classList.add('hidden');
+        goToStep(currentStep);
+      } else {
+        loginTab.className = 'px-6 py-2 text-sm font-semibold rounded-lg transition-all bg-white text-blue-700 shadow-sm';
+        registerTab.className = 'px-6 py-2 text-sm font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900';
+        stepper.classList.add('hidden');
+        viewLogin.classList.remove('hidden');
+        viewStep1.classList.add('hidden');
+        viewStep2.classList.add('hidden');
+        viewStep3.classList.add('hidden');
+      }
+    }
+
+    function goToStep(step) {
+      currentStep = step;
+      document.getElementById('view-step-1').classList.add('hidden');
+      document.getElementById('view-step-2').classList.add('hidden');
+      document.getElementById('view-step-3').classList.add('hidden');
+
+      const emailVal = document.getElementById('input-corporate-email')?.value?.trim();
+      if (emailVal && document.getElementById('otp-target-email')) {
+        document.getElementById('otp-target-email').innerText = emailVal;
+      }
+
+      // Update indicators
+      for (let i = 1; i <= 3; i++) {
+        const btn = document.getElementById(`step-btn-${i}`);
+        const badge = document.getElementById(`step-badge-${i}`);
+        if (i === step) {
+          btn.className = 'relative z-10 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-600 text-blue-700 font-semibold text-xs transition-all';
+          badge.className = 'w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold';
+          badge.innerText = i;
+        } else if (i < step) {
+          btn.className = 'relative z-10 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-400 text-emerald-700 font-medium text-xs transition-all cursor-pointer';
+          badge.className = 'w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold';
+          badge.innerHTML = '✓';
+        } else {
+          btn.className = 'relative z-10 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 font-medium text-xs transition-all hover:border-slate-400 cursor-pointer';
+          badge.className = 'w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold';
+          badge.innerText = i;
+        }
+      }
+
+      document.getElementById(`view-step-${step}`).classList.remove('hidden');
+      if (step === 2) {
+        CredettToast.show(`6-digit confirmation token sent to ${emailVal || 'your email'}.`, 'info');
+        const firstOtp = document.querySelector('#otp-container input.otp-digit');
+        if (firstOtp) setTimeout(() => firstOtp.focus(), 150);
+      }
+    }
+
+    function shiftOtpFocus(input, nextIndex) {
+      if (input.value.length >= 1) {
+        input.value = input.value.slice(0, 1);
+        const inputs = document.querySelectorAll('#otp-container input.otp-digit');
+        if (inputs[nextIndex]) {
+          inputs[nextIndex].focus();
+        }
+      }
+    }
+
+    function handleOtpBackspace(event, input, currentIndex) {
+      if (event.key === 'Backspace' && input.value.length === 0 && currentIndex > 0) {
+        const inputs = document.querySelectorAll('#otp-container input.otp-digit');
+        if (inputs[currentIndex - 1]) {
+          inputs[currentIndex - 1].focus();
+        }
+      }
+    }
+
+    function triggerFileInput(docNum) {
+      const fileInput = document.getElementById(`file-input-${docNum}`);
+      if (fileInput) fileInput.click();
+    }
+
+    function handleFileSelected(docNum, input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        uploadedFiles[docNum] = file;
+
+        // Update badge
+        const badge = document.getElementById(`doc${docNum}-badge`);
+        badge.className = 'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200';
+        badge.innerHTML = `<span class="material-symbols-outlined text-[14px]">check_circle</span> Uploaded`;
+
+        // Update preview
+        const uploadZone = document.getElementById(`doc${docNum}-upload-zone`);
+        const preview = document.getElementById(`doc${docNum}-preview`);
+        const filenameEl = document.getElementById(`doc${docNum}-filename`);
+        const filesizeEl = document.getElementById(`doc${docNum}-filesize`);
+        const iconEl = document.getElementById(`doc${docNum}-icon`);
+
+        filenameEl.textContent = file.name;
+        filesizeEl.textContent = `(${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+
+        if (file.name.endsWith('.pdf')) {
+          iconEl.textContent = 'picture_as_pdf';
+          iconEl.className = 'material-symbols-outlined text-red-500 text-[18px]';
+        } else if (file.name.match(/\.(png|jpg|jpeg)$/i)) {
+          iconEl.textContent = 'image';
+          iconEl.className = 'material-symbols-outlined text-emerald-500 text-[18px]';
+        } else {
+          iconEl.textContent = 'description';
+          iconEl.className = 'material-symbols-outlined text-blue-500 text-[18px]';
+        }
+
+        uploadZone.classList.add('hidden');
+        preview.classList.remove('hidden');
+
+        CredettToast.show(`"${file.name}" uploaded successfully.`, 'success');
+      }
+    }
+
+    function removeFile(docNum) {
+      uploadedFiles[docNum] = null;
+      const fileInput = document.getElementById(`file-input-${docNum}`);
+      if (fileInput) fileInput.value = '';
+
+      const badge = document.getElementById(`doc${docNum}-badge`);
+      badge.className = 'text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200';
+      badge.innerHTML = `Required`;
+
+      const uploadZone = document.getElementById(`doc${docNum}-upload-zone`);
+      const preview = document.getElementById(`doc${docNum}-preview`);
+      uploadZone.classList.remove('hidden');
+      preview.classList.add('hidden');
+
+      CredettToast.show(`Document #${docNum} removed.`, 'warning');
+    }
+
+    function submitKYB() {
+      const btn = document.getElementById('kyb-submit-btn');
+      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">autorenew</span> Verifying Institutional Credentials...`;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        CredettToast.show('KYB Verification Submitted & Approved! Redirecting to Merchant Console...', 'success', 2500);
+        setTimeout(() => {
+          window.location.href = 'merchant-dashboard.html';
+        }, 1200);
+      }, 1500);
+    }
+
+    function performDirectLogin() {
+      const email = document.getElementById('login-email')?.value || 'Merchant';
+      CredettToast.show(`Session authenticated for ${email}. Launching Merchant Console...`, 'success', 2000);
+      setTimeout(() => {
+        window.location.href = 'merchant-dashboard.html';
+      }, 800);
+    }
+  </script>
+</body>
+
+</html>

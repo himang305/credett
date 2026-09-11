@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Credett | Developer Settings, API Keys & Webhooks</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
+  <link rel="stylesheet" href="shared/style.css">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "rgb(109, 87, 227)",
+            "primary-hover": "#5d44d6",
+            "primary-container": "#f3f1fd",
+            "surface-dark": "#0B0F17",
+            "blue": {
+              50: "#f5f3ff",
+              100: "#ede9fe",
+              200: "#ddd6fe",
+              300: "#c4b5fd",
+              400: "#a78bfa",
+              500: "#8b5cf6",
+              600: "rgb(109, 87, 227)",
+              700: "#5d44d6",
+              800: "#4f36c0",
+              900: "#372882"
+            }
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-slate-50 font-body-md text-slate-900 min-h-screen flex antialiased pb-24">
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar()"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden md:hidden"></div>
+
+  <!-- Sidebar -->
+  <aside
+    class="fixed left-0 top-0 h-full w-64 bg-white text-slate-800 border-r border-slate-200 z-50 flex flex-col justify-between py-6 shadow-xs -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out">
+    <div class="flex flex-col">
+      <div class="px-6 mb-6 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-600 text-[26px]">shield_locked</span>
+          <span class="text-xl font-bold tracking-tight text-slate-900 font-headline-md">CREDETT</span>
+        </a>
+        <div class="flex items-center gap-2">
+          <span
+            class="text-[11px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">LIVE</span>
+          <button type="button" onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-slate-700">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="px-4 mb-6">
+        <div
+          class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between hover:bg-slate-100 transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+              AC</div>
+            <div class="overflow-hidden">
+              <div class="text-xs font-bold text-slate-900 truncate">Acme Commerce</div>
+              <div class="text-[11px] text-slate-500 font-mono">ID: #8821</div>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">unfold_more</span>
+        </div>
+      </div>
+
+      <nav class="px-3 space-y-1">
+        <a href="merchant-dashboard.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all text-xs font-medium">
+          <span class="material-symbols-outlined text-[20px]">dashboard</span>
+          <span>Overview</span>
+        </a>
+        <a href="merchant-payments.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all text-xs font-medium">
+          <span class="material-symbols-outlined text-[20px]">payments</span>
+          <span>Payments Ledger</span>
+        </a>
+        <a href="merchant-settlement.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all text-xs font-medium">
+          <span class="material-symbols-outlined text-[20px]">tune</span>
+          <span>Payment & Settlement Config</span>
+        </a>
+        <a href="merchant-developers.html"
+          class="flex items-center gap-3 px-3 py-2.5 transition-all bg-blue-600 text-white font-semibold rounded-xl shadow-xs text-xs">
+          <span class="material-symbols-outlined text-[20px]">terminal</span>
+          <span>Developers & API</span>
+        </a>
+        <a href="merchant-team.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all text-xs font-medium">
+          <span class="material-symbols-outlined text-[20px]">group</span>
+          <span>Team & Roles</span>
+        </a>
+        <div class="pt-2">
+          <a href="auth.html" onclick="CredettToast.show('Logged out successfully.', 'info')"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-rose-600 hover:bg-rose-50 transition-all text-xs font-semibold group">
+            <span
+              class="material-symbols-outlined text-[20px] group-hover:translate-x-0.5 transition-transform">logout</span>
+            <span>Logout</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="px-6 pt-4 border-t border-slate-200">
+      <div class="flex items-center justify-between text-xs text-slate-600 mb-3">
+        <span class="font-medium">Gateway Nodes</span>
+        <span class="flex items-center gap-1.5 text-emerald-600 font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 100% Operational
+        </span>
+      </div>
+      <a href="auth.html" onclick="CredettToast.show('Logged out successfully.', 'info')"
+        class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50/50 text-xs font-medium transition-colors">
+        <span class="material-symbols-outlined text-[16px]">logout</span>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="w-full md:pl-64 flex-1 flex flex-col min-w-0">
+    <header
+      class="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-4 sm:px-8 shadow-xs gap-3">
+      <div class="flex items-center gap-3">
+        <button type="button" onclick="toggleMobileSidebar()"
+          class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors focus:outline-none">
+          <span class="material-symbols-outlined text-[22px]">menu</span>
+        </button>
+        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 truncate">
+          <span class="text-slate-900 hidden sm:inline">Developers</span> <span class="hidden sm:inline">/</span> <span
+            class="truncate">API Keys, Webhooks & Sandbox</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 shrink-0">
+        <a href="https://docs.credett.io" target="_blank"
+          onclick="event.preventDefault(); CredettToast.show('Opening API Reference v2.4 in documentation portal.', 'info')"
+          class="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-semibold">
+          <span class="material-symbols-outlined text-[16px]">menu_book</span>
+          <span class="hidden sm:inline">API Specs</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="p-4 sm:p-6 lg:p-8 space-y-8 flex-1 max-w-5xl">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Developer API Keys & Webhooks</h1>
+        <p class="text-xs text-slate-500 mt-1">Manage institutional REST API credentials, webhook subscriptions, and
+          test interactive payloads.</p>
+      </div>
+
+      <!-- 1. API Keys Section -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">API Credentials</h2>
+            <p class="text-xs text-slate-500">Use secret keys to sign requests from your backend server.</p>
+          </div>
+          <button onclick="openNewKeyModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3 py-2 rounded-lg flex items-center gap-1.5 shadow-xs">
+            <span class="material-symbols-outlined text-[16px]">add</span> Generate New API Key
+          </button>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Live Secret Key -->
+          <div
+            class="p-4 border border-slate-200 rounded-xl bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-900">Production Live Secret</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">ACTIVE</span>
+              </div>
+              <div class="flex items-center gap-2 mt-1.5 font-mono text-xs text-slate-700">
+                <span id="key-live-text">sk_live_994821••••••••••••••••••••</span>
+                <button onclick="toggleKeyVisibility('key-live-text', 'sk_live_994821a8120c4bb7893ef01')"
+                  class="text-slate-400 hover:text-slate-700">
+                  <span class="material-symbols-outlined text-[16px]">visibility</span>
+                </button>
+                <button onclick="copyToClipboard('sk_live_994821a8120c4bb7893ef01', 'Live API Key')"
+                  class="text-slate-400 hover:text-slate-700">
+                  <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="text-[11px] text-slate-400 font-mono">Created: Jan 14, 2026</div>
+          </div>
+
+          <!-- Sandbox Test Key -->
+          <div
+            class="p-4 border border-slate-200 rounded-xl bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-900">Sandbox Test Key</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700">TEST MODE</span>
+              </div>
+              <div class="flex items-center gap-2 mt-1.5 font-mono text-xs text-slate-700">
+                <span id="key-test-text">sk_test_448102••••••••••••••••••••</span>
+                <button onclick="toggleKeyVisibility('key-test-text', 'sk_test_448102fa991b88e144a0377')"
+                  class="text-slate-400 hover:text-slate-700">
+                  <span class="material-symbols-outlined text-[16px]">visibility</span>
+                </button>
+                <button onclick="copyToClipboard('sk_test_448102fa991b88e144a0377', 'Test API Key')"
+                  class="text-slate-400 hover:text-slate-700">
+                  <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="text-[11px] text-slate-400 font-mono">Created: Jan 10, 2026</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Webhooks Section -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Webhook Subscriptions</h2>
+            <p class="text-xs text-slate-500">Credett emits signed JSON payloads on payment confirmations and automated
+              sweeps.</p>
+          </div>
+          <button onclick="triggerWebhookTestPing()"
+            class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3 py-2 rounded-lg flex items-center gap-1.5 shadow-xs">
+            <span class="material-symbols-outlined text-[16px]">send</span> Send Test Webhook Ping
+          </button>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-700 block mb-1">Webhook Endpoint URL</label>
+            <div class="flex gap-2">
+              <input type="url" value="https://api.acmepayments.com/v1/webhooks/credett"
+                class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+              <button onclick="CredettToast.show('Webhook URL updated.', 'success')"
+                class="bg-white border border-slate-300 hover:bg-slate-50 px-4 py-2 rounded-lg text-xs font-bold text-slate-700 shadow-xs">
+                Update
+              </button>
+            </div>
+          </div>
+
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-slate-400 text-[18px]">key</span>
+              <span class="text-slate-600">Signing Secret (HMAC-SHA256):</span>
+              <span class="font-mono font-bold text-slate-900">whsec_99a812bc8801f...</span>
+            </div>
+            <button onclick="copyToClipboard('whsec_99a812bc8801f4409bb8921a', 'Webhook Secret')"
+              class="text-blue-600 font-semibold hover:underline">
+              Copy Secret
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Interactive API Sandbox Tester -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">API Sandbox Playground</h2>
+            <p class="text-xs text-slate-500">Test generating instant checkout sessions against the live mock gateway.
+            </p>
+          </div>
+          <span class="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">POST
+            /v1/payments/create</span>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <!-- Request Builder -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Request Body (JSON)</div>
+            <textarea id="sandbox-req-body" rows="9"
+              class="w-full bg-slate-950 text-emerald-400 font-mono text-xs p-4 rounded-xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 leading-relaxed">{
+  "amount": 450.00,
+  "currency": "USD",
+  "settle_in": "USDC",
+  "accepted_chains": ["ethereum", "solana", "base"],
+  "customer_email": "treasury@buyer.io",
+  "metadata": {
+    "order_id": "ORD_9981"
+  }
+}</textarea>
+            <button onclick="executeSandboxApi()"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">play_arrow</span> Send API Request
+            </button>
+          </div>
+
+          <!-- Response Inspector -->
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Gateway Response</span>
+              <span
+                class="text-[11px] font-mono font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"
+                id="sandbox-status">200 OK</span>
+            </div>
+            <pre id="sandbox-resp-body"
+              class="w-full bg-slate-950 text-blue-300 font-mono text-xs p-4 rounded-xl border border-slate-800 overflow-x-auto leading-relaxed h-[206px]">{
+  "id": "pay_99a8120c",
+  "status": "requires_payment",
+  "amount_usd": 450.00,
+  "settlement_token": "USDC",
+  "checkout_url": "https://pay.credett.io/checkout/pay_99a8120c",
+  "expires_at": "2026-09-11T17:15:00Z"
+}</pre>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Generate New Key Modal -->
+  <div id="new-key-modal"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 animate-fade-in space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900">Generate New Secret API Key</h3>
+        <button onclick="closeNewKeyModal()" class="text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); submitGenerateKey();" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Key Name / Description</label>
+          <input type="text" id="new-key-name" placeholder="e.g. Backend Node Service Key" required
+            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Environment</label>
+          <select
+            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <option>Production (Live Payments)</option>
+            <option>Sandbox (Test Faucet)</option>
+          </select>
+        </div>
+
+        <div class="pt-2 flex items-center gap-3">
+          <button type="submit"
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 rounded-lg transition-all shadow-sm">
+            Create Secret Key
+          </button>
+          <button type="button" onclick="closeNewKeyModal()"
+            class="px-4 py-2.5 border border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="shared/app.js"></script>
+  <script>
+    function toggleKeyVisibility(elemId, fullKey) {
+      const el = document.getElementById(elemId);
+      if (el.innerText.includes('••••')) {
+        el.innerText = fullKey;
+      } else {
+        el.innerText = fullKey.slice(0, 14) + '••••••••••••••••••••';
+      }
+    }
+
+    function triggerWebhookTestPing() {
+      CredettToast.show('Webhook ping delivered! Status 200 OK received from https://api.acmepayments.com.', 'success', 4000);
+    }
+
+    function executeSandboxApi() {
+      const resp = document.getElementById('sandbox-resp-body');
+      resp.innerHTML = '<span class="text-slate-500">// Sending signed request to Credett Core...</span>';
+
+      setTimeout(() => {
+        const id = 'pay_' + Math.random().toString(36).substring(2, 10);
+        resp.innerText = JSON.stringify({
+          id: id,
+          status: "requires_payment",
+          amount_usd: 450.00,
+          settlement_token: "USDC",
+          checkout_url: `https://pay.credett.io/checkout/${id}`,
+          created_at: new Date().toISOString()
+        }, null, 2);
+        CredettToast.show('Sandbox API Call Succeeded (200 OK)', 'success');
+      }, 400);
+    }
+
+    function openNewKeyModal() {
+      document.getElementById('new-key-modal').classList.remove('hidden');
+    }
+
+    function closeNewKeyModal() {
+      document.getElementById('new-key-modal').classList.add('hidden');
+    }
+
+    function submitGenerateKey() {
+      const name = document.getElementById('new-key-name').value;
+      closeNewKeyModal();
+      const newKey = 'sk_live_' + Math.random().toString(36).substring(2, 18);
+      copyToClipboard(newKey, `New key "${name}" created`);
+    }
+  </script>
+</body>
+
+</html>

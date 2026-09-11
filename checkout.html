@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Credett Pay | Hosted Web3 Checkout</title>
+  <meta name="description" content="Secure, non-custodial crypto payment checkout powered by Credett Gateway.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="shared/style.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+
+<body
+  class="bg-slate-100 min-h-screen flex flex-col justify-between antialiased text-slate-900 selection:bg-blue-100 selection:text-blue-900">
+
+  <!-- Top Bar -->
+  <header
+    class="w-full bg-white border-b border-slate-200 py-3.5 px-6 sm:px-10 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-blue-600 text-[24px]">shield_locked</span>
+      <span class="text-lg font-bold tracking-tight text-slate-900 font-mono">CREDETT <span
+          class="text-xs font-semibold text-blue-600 px-2 py-0.5 bg-blue-50 rounded border border-blue-200 uppercase">Pay</span></span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div
+        class="flex items-center gap-1.5 text-xs text-slate-500 font-medium bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="hidden sm:inline">Encrypted Session</span> • <span class="font-mono"
+          id="header-inv-id">inv_xwss7g3</span>
+      </div>
+      <a href="merchant-dashboard.html"
+        class="text-xs font-semibold text-slate-500 hover:text-slate-900 flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+        <span class="hidden sm:inline">Merchant Console</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div
+      class="w-full max-w-xl bg-white rounded-3xl border border-slate-200/90 shadow-2xl overflow-hidden transition-all">
+
+      <!-- Merchant Header & Invoice Info -->
+      <div class="bg-slate-900 text-white p-6 sm:p-8 relative overflow-hidden">
+        <!-- Ambient subtle glow -->
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-600/30 rounded-full blur-3xl pointer-events-none">
+        </div>
+
+        <div class="flex items-start justify-between relative z-10">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-11 h-11 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+              AC
+            </div>
+            <div>
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pay to Merchant</div>
+              <div class="text-base font-bold text-white flex items-center gap-1.5">
+                Acme Commerce Inc.
+                <span class="material-symbols-outlined text-blue-400 text-[16px]">verified</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-right">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Amount Due</div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono tracking-tight"
+              id="checkout-amount-display">$250.00</div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+          <div class="truncate max-w-[280px]" id="checkout-desc-display">Enterprise API Plan - Invoice #9948</div>
+          <div class="flex items-center gap-1.5 text-emerald-400 font-mono font-medium">
+            <span class="material-symbols-outlined text-[14px]">timer</span>
+            <span id="rate-lock-timer">14:59 Rate Lock</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- VIEW 1: SELECT NETWORK & TOKEN (PAYMENT CONFIG)              -->
+      <!-- ============================================================ -->
+      <div id="view-step-select" class="p-6 sm:p-8 space-y-6">
+
+        <!-- Step 1: Network Selection -->
+        <div class="space-y-2.5">
+          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center justify-between">
+            <span>1. Select Blockchain Network</span>
+            <span class="text-[11px] font-normal text-slate-400">Auto-routes via Fireblocks</span>
+          </label>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="checkout-networks-list">
+            <!-- Ethereum -->
+            <button type="button" onclick="selectNetwork('eth', 'Ethereum Mainnet', 'ERC-20')"
+              class="net-btn active p-2.5 rounded-xl border border-blue-500 bg-blue-50/70 text-left transition-all flex items-center gap-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                Ξ</div>
+              <div class="overflow-hidden">
+                <div class="text-xs font-bold text-slate-900 truncate">Ethereum</div>
+                <div class="text-[10px] text-slate-500">ERC-20</div>
+              </div>
+            </button>
+
+            <!-- Solana -->
+            <button type="button" onclick="selectNetwork('sol', 'Solana Network', 'SPL')"
+              class="net-btn p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all flex items-center gap-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-purple-700 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                ◎</div>
+              <div class="overflow-hidden">
+                <div class="text-xs font-bold text-slate-900 truncate">Solana</div>
+                <div class="text-[10px] text-slate-500">SPL</div>
+              </div>
+            </button>
+
+            <!-- Polygon -->
+            <button type="button" onclick="selectNetwork('polygon', 'Polygon PoS', 'PoS')"
+              class="net-btn p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all flex items-center gap-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                ⬡</div>
+              <div class="overflow-hidden">
+                <div class="text-xs font-bold text-slate-900 truncate">Polygon</div>
+                <div class="text-[10px] text-slate-500">Fast</div>
+              </div>
+            </button>
+
+            <!-- Base -->
+            <button type="button" onclick="selectNetwork('base', 'Base Network', 'L2')"
+              class="net-btn p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all flex items-center gap-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                🔵</div>
+              <div class="overflow-hidden">
+                <div class="text-xs font-bold text-slate-900 truncate">Base L2</div>
+                <div class="text-[10px] text-slate-500">Coinbase</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Asset / Currency Selection -->
+        <div class="space-y-2.5">
+          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center justify-between">
+            <span>2. Select Payment Currency</span>
+            <span class="text-[11px] font-normal text-emerald-600 font-semibold">0% Slippage Guaranteed</span>
+          </label>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="checkout-tokens-list">
+            <!-- USDC -->
+            <div onclick="selectToken('USDC', 1, '$', 'bg-blue-600')"
+              class="tok-card active p-3 rounded-xl border border-blue-500 bg-blue-50/70 cursor-pointer transition-all flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div
+                  class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                  $</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-900">USDC</div>
+                  <div class="text-[10px] text-slate-500">USD Coin</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono font-bold text-blue-700" id="tok-calc-usdc">250.00</span>
+            </div>
+
+            <!-- USDT -->
+            <div onclick="selectToken('USDT', 1, '₮', 'bg-emerald-600')"
+              class="tok-card p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div
+                  class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                  ₮</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-900">USDT</div>
+                  <div class="text-[10px] text-slate-500">Tether USD</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono font-bold text-slate-700" id="tok-calc-usdt">250.00</span>
+            </div>
+
+            <!-- ETH / Native -->
+            <div onclick="selectToken('ETH', 2850, 'Ξ', 'bg-slate-900')"
+              class="tok-card p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div
+                  class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                  Ξ</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-900">ETH</div>
+                  <div class="text-[10px] text-slate-500">Ether</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono font-bold text-slate-700" id="tok-calc-eth">0.0877</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Email for receipt (Optional) -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-slate-700 block">Send Confirmation Receipt To</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <span class="material-symbols-outlined text-[18px]">mail</span>
+            </span>
+            <input type="email" id="customer-receipt-email" placeholder="you@company.com"
+              value="alex.vance@acmepayments.com"
+              class="w-full bg-slate-50 border border-slate-300 text-slate-900 pl-10 pr-4 py-2.5 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+        </div>
+
+        <button type="button" onclick="proceedToPaymentQR()"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm">
+          <span>Proceed to Pay</span>
+          <span class="font-mono font-bold" id="btn-proceed-amount">250.00 USDC</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </button>
+
+        <!-- Trust footer badge -->
+        <div class="flex items-center justify-center gap-2 text-xs text-slate-400 pt-1">
+          <span class="material-symbols-outlined text-emerald-500 text-[16px]">lock</span>
+          <span>Non-custodial Fireblocks vault deposit with 256-bit AML screening</span>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- VIEW 2: QR CODE & PAYMENT INSTRUCTIONS                      -->
+      <!-- ============================================================ -->
+      <div id="view-step-qr" class="p-6 sm:p-8 space-y-6 hidden">
+
+        <!-- Payment details bar -->
+        <div class="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-xs"
+              id="qr-selected-icon">
+              $
+            </div>
+            <div>
+              <div class="text-xs text-slate-500 font-medium">Exact Payment Amount</div>
+              <div class="text-lg font-bold text-slate-900 font-mono" id="qr-exact-amount">250.00 USDC</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800"
+              id="qr-network-badge">Ethereum ERC-20</span>
+          </div>
+        </div>
+
+        <!-- Interactive QR Section -->
+        <div class="flex flex-col items-center justify-center py-2">
+          <div class="p-4 bg-white border-2 border-slate-200 rounded-2xl shadow-inner relative group">
+            <!-- Simulated High-Res SVG QR Code -->
+            <svg class="w-48 h-48 sm:w-56 sm:h-56" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="100" height="100" fill="white" />
+              <!-- Outer Markers -->
+              <rect x="5" y="5" width="26" height="26" rx="4" fill="#0f172a" />
+              <rect x="9" y="9" width="18" height="18" rx="2" fill="white" />
+              <rect x="13" y="13" width="10" height="10" rx="1" fill="#6d57e3" />
+
+              <rect x="69" y="5" width="26" height="26" rx="4" fill="#0f172a" />
+              <rect x="73" y="9" width="18" height="18" rx="2" fill="white" />
+              <rect x="77" y="13" width="10" height="10" rx="1" fill="#6d57e3" />
+
+              <rect x="5" y="69" width="26" height="26" rx="4" fill="#0f172a" />
+              <rect x="9" y="73" width="18" height="18" rx="2" fill="white" />
+              <rect x="13" y="77" width="10" height="10" rx="1" fill="#6d57e3" />
+
+              <!-- Matrix Pattern Blocks -->
+              <rect x="36" y="8" width="5" height="5" fill="#0f172a" />
+              <rect x="44" y="8" width="5" height="8" fill="#0f172a" />
+              <rect x="53" y="8" width="6" height="5" fill="#0f172a" />
+              <rect x="36" y="18" width="8" height="5" fill="#0f172a" />
+              <rect x="50" y="18" width="5" height="8" fill="#0f172a" />
+              <rect x="58" y="18" width="6" height="5" fill="#0f172a" />
+
+              <rect x="8" y="36" width="5" height="6" fill="#0f172a" />
+              <rect x="16" y="36" width="8" height="5" fill="#0f172a" />
+              <rect x="28" y="36" width="5" height="5" fill="#0f172a" />
+              <rect x="8" y="46" width="6" height="8" fill="#0f172a" />
+              <rect x="18" y="46" width="5" height="5" fill="#0f172a" />
+              <rect x="26" y="46" width="8" height="5" fill="#0f172a" />
+              <rect x="8" y="58" width="5" height="5" fill="#0f172a" />
+              <rect x="18" y="58" width="6" height="5" fill="#0f172a" />
+
+              <!-- Center Center & Custom Logo in QR -->
+              <rect x="38" y="38" width="24" height="24" rx="6" fill="#0f172a" />
+              <circle cx="50" cy="50" r="8" fill="#6d57e3" />
+              <path d="M47 50L49 52L53 47" stroke="white" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+
+              <!-- Lower Matrix -->
+              <rect x="36" y="68" width="8" height="5" fill="#0f172a" />
+              <rect x="48" y="68" width="5" height="6" fill="#0f172a" />
+              <rect x="58" y="68" width="6" height="8" fill="#0f172a" />
+              <rect x="68" y="68" width="8" height="5" fill="#0f172a" />
+              <rect x="80" y="68" width="6" height="5" fill="#0f172a" />
+              <rect x="36" y="78" width="6" height="8" fill="#0f172a" />
+              <rect x="46" y="78" width="8" height="5" fill="#0f172a" />
+              <rect x="68" y="78" width="5" height="8" fill="#0f172a" />
+              <rect x="78" y="78" width="8" height="5" fill="#0f172a" />
+              <rect x="88" y="78" width="4" height="8" fill="#0f172a" />
+              <rect x="36" y="88" width="8" height="5" fill="#0f172a" />
+              <rect x="50" y="88" width="6" height="5" fill="#0f172a" />
+              <rect x="60" y="88" width="8" height="5" fill="#0f172a" />
+              <rect x="74" y="88" width="6" height="5" fill="#0f172a" />
+              <rect x="84" y="88" width="8" height="5" fill="#0f172a" />
+            </svg>
+          </div>
+          <span class="text-xs text-slate-500 mt-2 font-medium">Scan with any Web3 wallet (MetaMask, Phantom, Coinbase,
+            Rainbow)</span>
+        </div>
+
+        <!-- Deposit Address Box -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-700">Dedicated Deposit Address</span>
+            <span class="text-blue-600 font-semibold cursor-pointer hover:underline"
+              onclick="CredettToast.show('Single-use temporary vault address.', 'info')">Single-use Vault</span>
+          </div>
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+            <span class="font-mono text-xs text-slate-800 truncate select-all"
+              id="deposit-address-val">0x88f29c11894ba2d00192e8a71920ac3491829a12</span>
+            <button type="button"
+              onclick="copyToClipboard(document.getElementById('deposit-address-val').innerText, 'Deposit Address')"
+              class="ml-2 p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition-colors shrink-0 flex items-center gap-1 text-xs font-semibold">
+              <span class="material-symbols-outlined text-[16px]">content_copy</span>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Button: I have paid (Trigger 10s confirmation simulation) -->
+        <div class="space-y-2 pt-2">
+          <button type="button" onclick="startPaymentConfirmationFlow()" id="btn-trigger-payment"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <span>I Have Sent the Payment</span>
+          </button>
+
+          <button type="button" onclick="backToSelection()"
+            class="w-full bg-white hover:bg-slate-50 text-slate-600 font-semibold py-2.5 rounded-xl border border-slate-200 transition-colors text-xs flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            <span>Change Currency / Network</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- VIEW 3: LIVE CONFIRMATION TIMER (10s WAIT)                  -->
+      <!-- ============================================================ -->
+      <div id="view-step-waiting" class="p-8 sm:p-10 space-y-6 text-center hidden">
+        <div class="relative w-24 h-24 mx-auto flex items-center justify-center">
+          <svg class="w-24 h-24 transform -rotate-90">
+            <circle cx="48" cy="48" r="40" stroke="#e2e8f0" stroke-width="6" fill="transparent" />
+            <circle id="countdown-circle" cx="48" cy="48" r="40" stroke="rgb(109, 87, 227)" stroke-width="6"
+              stroke-dasharray="251.2" stroke-dashoffset="0" fill="transparent"
+              class="transition-all duration-1000 ease-linear" />
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="text-2xl font-black text-slate-900 font-mono" id="confirm-countdown-num">10</span>
+            <span class="text-[9px] font-bold text-slate-400 uppercase">Seconds</span>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-bold text-slate-900 tracking-tight">Detecting On-Chain Transaction</h2>
+          <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+            Listening for block validation on Fireblocks RPC nodes
+          </p>
+        </div>
+
+        <!-- Progress Steps Tracker -->
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left space-y-3 text-xs">
+          <div class="flex items-center justify-between text-slate-800 font-semibold">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+              <span id="step-txt-1">1. Scanning mempool on <span id="waiting-network-name">Ethereum</span>...</span>
+            </div>
+            <span class="font-mono text-blue-600 font-bold" id="step-badge-1">Scanning</span>
+          </div>
+
+          <div class="flex items-center justify-between text-slate-400 font-medium">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-300" id="dot-step-2"></span>
+              <span id="step-txt-2">2. Zero-slippage oracle rate check</span>
+            </div>
+            <span class="font-mono text-[11px]" id="step-badge-2">Pending</span>
+          </div>
+
+          <div class="flex items-center justify-between text-slate-400 font-medium">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-300" id="dot-step-3"></span>
+              <span id="step-txt-3">3. Finalizing institutional merchant settlement</span>
+            </div>
+            <span class="font-mono text-[11px]" id="step-badge-3">Pending</span>
+          </div>
+        </div>
+
+        <div
+          class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800 flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">lock_clock</span>
+          <span>Please do not close this window while confirmation is in progress.</span>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- VIEW 4: CONFIRMED PAYMENT SUCCESS & RECEIPT                 -->
+      <!-- ============================================================ -->
+      <div id="view-step-success" class="p-8 sm:p-10 space-y-6 text-center hidden">
+        <div
+          class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+          <span class="material-symbols-outlined text-[36px]">check_circle</span>
+        </div>
+
+        <div>
+          <div
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold mb-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Confirmed & Settled
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Payment Successfully Verified!</h2>
+          <p class="text-xs text-slate-500 mt-1" id="success-receipt-note">
+            Receipt dispatched to <span class="font-semibold text-slate-800"
+              id="receipt-sent-email">alex.vance@acmepayments.com</span>
+          </p>
+        </div>
+
+        <!-- Receipt Card -->
+        <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl text-left space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+            <span class="text-slate-500 font-sans">Payment Amount:</span>
+            <span class="font-bold text-slate-900 text-sm" id="success-amount-display">$250.00 USD</span>
+          </div>
+
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+            <span class="text-slate-500 font-sans">Paid With:</span>
+            <span class="font-bold text-slate-900" id="success-token-display">250.00 USDC (Ethereum)</span>
+          </div>
+
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+            <span class="text-slate-500 font-sans">Transaction Hash:</span>
+            <div class="flex items-center gap-1 text-blue-600 font-bold">
+              <span id="success-tx-hash">0x883190b41189a024...</span>
+              <button onclick="copyToClipboard('0x883190b41189a024cb51b2c4891a88e9921', 'Transaction Hash')"
+                class="text-slate-400 hover:text-slate-700">
+                <span class="material-symbols-outlined text-[14px]">content_copy</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 font-sans">Settled Merchant Split:</span>
+            <span class="font-bold text-emerald-600">100% USDC Vault Deposit</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="space-y-2 pt-2">
+          <a href="merchant-dashboard.html"
+            class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm">
+            <span>Return to Merchant Dashboard</span>
+            <span class="material-symbols-outlined text-[18px]">dashboard</span>
+          </a>
+
+          <button type="button"
+            onclick="CredettToast.show('Official cryptographic receipt downloaded (PDF).', 'success')"
+            class="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold py-2.5 rounded-xl border border-slate-200 transition-colors text-xs flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+            <span>Download Tax & Audit Receipt</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-4 text-center text-xs text-slate-400">
+    Non-custodial settlement powered by <span class="font-semibold text-slate-600">Credett Web3 Gateway</span> & <span
+      class="font-semibold text-slate-600">Fireblocks</span>.
+  </footer>
+
+  <script src="shared/app.js"></script>
+  <script>
+    // URL Params parsing
+    const urlParams = new URLSearchParams(window.location.search);
+    let invoiceAmount = parseFloat(urlParams.get('amount')) || 250.00;
+    let invoiceId = urlParams.get('inv') || 'inv_xwss7g3';
+    let invoiceDesc = urlParams.get('desc') || 'Enterprise API Plan - Invoice #9948';
+
+    let selectedNetId = 'eth';
+    let selectedNetName = 'Ethereum Mainnet';
+    let selectedNetStandard = 'ERC-20';
+    let selectedTokenSymbol = 'USDC';
+    let selectedTokenRate = 1; // 1 USD = 1 USDC
+    let selectedTokenIcon = '$';
+    let selectedTokenIconBg = 'bg-blue-600';
+
+    // Update UI with URL params
+    document.getElementById('checkout-amount-display').innerText = `$${invoiceAmount.toFixed(2)}`;
+    document.getElementById('header-inv-id').innerText = invoiceId;
+    document.getElementById('checkout-desc-display').innerText = invoiceDesc;
+
+    function recalculateTokenAmounts() {
+      const usdcAmt = invoiceAmount.toFixed(2);
+      const usdtAmt = invoiceAmount.toFixed(2);
+      const ethAmt = (invoiceAmount / 2850).toFixed(4);
+
+      document.getElementById('tok-calc-usdc').innerText = usdcAmt;
+      document.getElementById('tok-calc-usdt').innerText = usdtAmt;
+      document.getElementById('tok-calc-eth').innerText = ethAmt;
+
+      updateProceedBtnText();
+    }
+
+    function updateProceedBtnText() {
+      let finalAmt = invoiceAmount.toFixed(2);
+      if (selectedTokenSymbol === 'ETH') {
+        finalAmt = (invoiceAmount / 2850).toFixed(4);
+      }
+      document.getElementById('btn-proceed-amount').innerText = `${finalAmt} ${selectedTokenSymbol}`;
+    }
+
+    function selectNetwork(id, name, standard) {
+      selectedNetId = id;
+      selectedNetName = name;
+      selectedNetStandard = standard;
+
+      document.querySelectorAll('#checkout-networks-list .net-btn').forEach(btn => {
+        btn.className = 'net-btn p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all flex items-center gap-2';
+      });
+      event.currentTarget.className = 'net-btn active p-2.5 rounded-xl border border-blue-500 bg-blue-50/70 text-left transition-all flex items-center gap-2';
+
+      CredettToast.show(`Switched network to ${name}.`, 'info');
+    }
+
+    function selectToken(symbol, rate, icon, iconBg) {
+      selectedTokenSymbol = symbol;
+      selectedTokenRate = rate;
+      selectedTokenIcon = icon;
+      selectedTokenIconBg = iconBg;
+
+      document.querySelectorAll('#checkout-tokens-list .tok-card').forEach(card => {
+        card.className = 'tok-card p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all flex items-center justify-between';
+      });
+      event.currentTarget.className = 'tok-card active p-3 rounded-xl border border-blue-500 bg-blue-50/70 cursor-pointer transition-all flex items-center justify-between';
+
+      updateProceedBtnText();
+    }
+
+    function proceedToPaymentQR() {
+      document.getElementById('view-step-select').classList.add('hidden');
+      document.getElementById('view-step-qr').classList.remove('hidden');
+
+      let finalAmt = invoiceAmount.toFixed(2);
+      if (selectedTokenSymbol === 'ETH') {
+        finalAmt = (invoiceAmount / 2850).toFixed(4);
+      }
+
+      document.getElementById('qr-exact-amount').innerText = `${finalAmt} ${selectedTokenSymbol}`;
+      document.getElementById('qr-network-badge').innerText = `${selectedNetName} (${selectedNetStandard})`;
+
+      const iconEl = document.getElementById('qr-selected-icon');
+      iconEl.className = `w-10 h-10 rounded-xl ${selectedTokenIconBg} text-white flex items-center justify-center font-bold text-sm shadow-xs`;
+      iconEl.innerText = selectedTokenIcon;
+
+      // Custom Deposit address generation based on chain
+      if (selectedNetId === 'sol') {
+        document.getElementById('deposit-address-val').innerText = '7xKXtg2CW87d97TXJSDpHFDxhx9k3WcR247291a';
+      } else {
+        document.getElementById('deposit-address-val').innerText = '0x88f29c11894ba2d00192e8a71920ac3491829a12';
+      }
+
+      CredettToast.show('QR Code & single-use deposit vault ready.', 'success');
+    }
+
+    function backToSelection() {
+      document.getElementById('view-step-qr').classList.add('hidden');
+      document.getElementById('view-step-select').classList.remove('hidden');
+    }
+
+    // 10-Second Simulation Countdown
+    function startPaymentConfirmationFlow() {
+      document.getElementById('view-step-qr').classList.add('hidden');
+      document.getElementById('view-step-waiting').classList.remove('hidden');
+      document.getElementById('waiting-network-name').innerText = selectedNetName;
+
+      let secondsLeft = 10;
+      const countdownEl = document.getElementById('confirm-countdown-num');
+      const circleEl = document.getElementById('countdown-circle');
+      const totalDash = 251.2;
+
+      const timerInterval = setInterval(() => {
+        secondsLeft--;
+        countdownEl.innerText = secondsLeft;
+        const offset = totalDash - (secondsLeft / 10) * totalDash;
+        circleEl.style.strokeDashoffset = offset;
+
+        // Stage 1 (7s left)
+        if (secondsLeft === 7) {
+          document.getElementById('step-badge-1').className = 'font-mono text-emerald-600 font-bold';
+          document.getElementById('step-badge-1').innerText = 'Detected ✓';
+          document.getElementById('dot-step-2').className = 'w-2 h-2 rounded-full bg-blue-600 animate-ping';
+          document.getElementById('step-badge-2').className = 'font-mono text-blue-600 font-bold';
+          document.getElementById('step-badge-2').innerText = 'Executing';
+        }
+
+        // Stage 2 (4s left)
+        if (secondsLeft === 4) {
+          document.getElementById('step-badge-2').className = 'font-mono text-emerald-600 font-bold';
+          document.getElementById('step-badge-2').innerText = '0.00% Locked ✓';
+          document.getElementById('dot-step-3').className = 'w-2 h-2 rounded-full bg-blue-600 animate-ping';
+          document.getElementById('step-badge-3').className = 'font-mono text-blue-600 font-bold';
+          document.getElementById('step-badge-3').innerText = 'Sweeping';
+        }
+
+        // Finished (0s)
+        if (secondsLeft <= 0) {
+          clearInterval(timerInterval);
+          finishPaymentConfirmation();
+        }
+      }, 1000);
+    }
+
+    function finishPaymentConfirmation() {
+      document.getElementById('view-step-waiting').classList.add('hidden');
+      document.getElementById('view-step-success').classList.remove('hidden');
+
+      let finalAmt = invoiceAmount.toFixed(2);
+      if (selectedTokenSymbol === 'ETH') {
+        finalAmt = (invoiceAmount / 2850).toFixed(4);
+      }
+
+      document.getElementById('success-amount-display').innerText = `$${invoiceAmount.toFixed(2)} USD`;
+      document.getElementById('success-token-display').innerText = `${finalAmt} ${selectedTokenSymbol} (${selectedNetName})`;
+
+      const email = document.getElementById('customer-receipt-email')?.value || 'alex.vance@acmepayments.com';
+      document.getElementById('receipt-sent-email').innerText = email;
+
+      const randomHash = '0x' + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+      document.getElementById('success-tx-hash').innerText = `${randomHash.slice(0, 10)}...${randomHash.slice(-6)}`;
+
+      CredettToast.show('Payment confirmed and verified on-chain!', 'success', 3000);
+    }
+
+    // Initialize
+    recalculateTokenAmounts();
+  </script>
+</body>
+
+</html>

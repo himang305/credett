@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Credett | Merchant Overview Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
+  <link rel="stylesheet" href="shared/style.css">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "rgb(109, 87, 227)",
+            "primary-hover": "#5d44d6",
+            "primary-container": "#f3f1fd",
+            "surface-dark": "#0B0F17",
+            "blue": {
+              50: "#f5f3ff",
+              100: "#ede9fe",
+              200: "#ddd6fe",
+              300: "#c4b5fd",
+              400: "#a78bfa",
+              500: "#8b5cf6",
+              600: "rgb(109, 87, 227)",
+              700: "#5d44d6",
+              800: "#4f36c0",
+              900: "#372882"
+            }
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-slate-50 font-body-md text-slate-900 min-h-screen flex antialiased pb-24">
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar()"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden md:hidden"></div>
+
+  <!-- Sidebar -->
+  <aside
+    class="fixed left-0 top-0 h-full w-64 bg-white text-slate-800 border-r border-slate-200 z-50 flex flex-col justify-between py-6 shadow-xs -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out">
+    <div class="flex flex-col">
+      <!-- Logo & Mode -->
+      <div class="px-6 mb-6 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-600 text-[26px]">shield_locked</span>
+          <span class="text-xl font-bold tracking-tight text-slate-900 font-headline-md">CREDETT</span>
+        </a>
+        <div class="flex items-center gap-1.5">
+          <span
+            class="text-[11px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">LIVE</span>
+          <button type="button" onclick="toggleMobileSidebar()"
+            class="md:hidden text-slate-400 hover:text-slate-700 p-1">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Merchant Selector Pill -->
+      <div class="px-4 mb-6">
+        <div
+          class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between hover:bg-slate-100 transition-colors cursor-pointer"
+          onclick="CredettToast.show('Acme Commerce is currently active.', 'info')">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+              AC</div>
+            <div class="overflow-hidden">
+              <div class="text-xs font-bold text-slate-900 truncate">Acme Commerce</div>
+              <div class="text-[11px] text-slate-500 font-mono">ID: #8821</div>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">unfold_more</span>
+        </div>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="px-3 space-y-1">
+        <a href="merchant-dashboard.html"
+          class="flex items-center gap-3 px-3 py-2.5 transition-all bg-blue-600 text-white font-semibold rounded-xl shadow-xs text-xs">
+          <span class="material-symbols-outlined text-[20px]">dashboard</span>
+          <span>Overview</span>
+        </a>
+        <a href="merchant-payments.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all text-xs font-medium">
+          <span class="material-symbols-outlined text-[20px]">payments</span>
+          <span>Payments Ledger</span>
+        </a>
+        <a href="merchant-settlement.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all text-xs font-medium">
+          <span class="material-symbols-outlined text-[20px]">tune</span>
+          <span>Payment & Settlement Config</span>
+        </a>
+        <a href="merchant-developers.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all text-xs font-medium">
+          <span class="material-symbols-outlined text-[20px]">terminal</span>
+          <span>Developers & API</span>
+        </a>
+        <a href="merchant-team.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all text-xs font-medium">
+          <span class="material-symbols-outlined text-[20px]">group</span>
+          <span>Team & Roles</span>
+        </a>
+        <div class="pt-2">
+          <a href="auth.html" onclick="CredettToast.show('Logged out successfully.', 'info')"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-rose-600 hover:bg-rose-50 transition-all text-xs font-semibold group">
+            <span
+              class="material-symbols-outlined text-[20px] group-hover:translate-x-0.5 transition-transform">logout</span>
+            <span>Logout</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Bottom Status -->
+    <div class="px-6 pt-4 border-t border-slate-200">
+      <div class="flex items-center justify-between text-xs text-slate-600 mb-3">
+        <span class="font-medium">Gateway Nodes</span>
+        <span class="flex items-center gap-1.5 text-emerald-600 font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 100% Operational
+        </span>
+      </div>
+      <a href="auth.html" onclick="CredettToast.show('Logged out successfully.', 'info')"
+        class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50/50 text-xs font-medium transition-colors">
+        <span class="material-symbols-outlined text-[16px]">logout</span>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="w-full md:pl-64 flex-1 flex flex-col min-w-0">
+    <!-- Header -->
+    <header
+      class="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-8 shadow-xs">
+      <div class="flex items-center gap-3">
+        <!-- Hamburger Menu Toggle on Mobile -->
+        <button type="button" onclick="toggleMobileSidebar()"
+          class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+          <span class="material-symbols-outlined text-[22px]">menu</span>
+        </button>
+
+        <div class="flex items-center w-52 sm:w-80 bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5">
+          <span class="material-symbols-outlined text-slate-400 text-[18px] mr-2">search</span>
+          <input
+            class="bg-transparent border-none outline-none text-xs text-slate-800 w-full placeholder:text-slate-400"
+            placeholder="Search transactions..." type="text"
+            onkeyup="if(event.key==='Enter') CredettToast.show('Searching ledger for: ' + this.value, 'info')">
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-4">
+        <a href="merchant-developers.html"
+          class="hidden sm:flex items-center gap-1 text-xs text-slate-600 hover:text-slate-900 transition-colors font-semibold">
+          <span class="material-symbols-outlined text-[18px]">menu_book</span> API Docs
+        </a>
+        <button class="relative p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          onclick="CredettToast.show('3 automated Fireblocks sweeps completed today.', 'info')">
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-600"></span>
+        </button>
+        <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+          <div
+            class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+            AV
+          </div>
+          <div class="hidden sm:block text-left">
+            <div class="text-xs font-bold text-slate-900">Alex Vance</div>
+            <div class="text-[10px] text-slate-500">Org Admin</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Body Area -->
+    <main class="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 flex-1">
+
+      <!-- Top Welcome & Actions -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Good afternoon, Acme Commerce</h1>
+          <p class="text-sm text-slate-500 mt-1">Here is your live multi-chain settlement telemetry and transaction
+            stream.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Time Range Filter -->
+          <div class="inline-flex p-1 bg-white border border-slate-200 rounded-xl shadow-xs text-xs font-semibold"
+            id="timeframe-selector">
+            <button type="button" onclick="setTimeframe('today')"
+              class="tf-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">Today</button>
+            <button type="button" onclick="setTimeframe('7d')"
+              class="tf-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">7D</button>
+            <button type="button" onclick="setTimeframe('30d')"
+              class="tf-btn active px-3 py-1.5 rounded-lg bg-slate-100 text-blue-700 font-bold">30D</button>
+            <button type="button" onclick="setTimeframe('90d')"
+              class="tf-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">90D</button>
+          </div>
+
+          <button onclick="openPaymentLinkModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">add_box</span>
+            <span>Create Payment Link</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Setup Progress Card -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-xs">
+        <div
+          class="absolute right-0 top-0 w-96 h-full bg-gradient-to-l from-blue-50 to-transparent pointer-events-none">
+        </div>
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+          <div class="space-y-1 max-w-xl">
+            <div class="flex items-center gap-2">
+              <span
+                class="text-[11px] px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">Recommended
+                Action</span>
+              <span class="text-xs text-slate-500 font-medium">4 of 5 setup milestones completed</span>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900">Automated Stablecoin Sweeps Configured</h2>
+            <p class="text-xs text-slate-600">Connect your custom webhook listener to receive real-time cryptographic
+              transaction proofs.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="merchant-developers.html"
+              class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-xs">
+              Configure Webhooks
+            </a>
+          </div>
+        </div>
+        <!-- Progress bar -->
+        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
+          <div class="bg-blue-600 h-full rounded-full" style="width: 80%;"></div>
+        </div>
+      </div>
+
+      <!-- KPI Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- KPI 1 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all">
+          <div class="flex items-center justify-between text-slate-500">
+            <span class="text-xs font-semibold uppercase tracking-wider">Gross Volume</span>
+            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[18px]">payments</span>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="text-2xl font-bold text-slate-900 font-mono" id="kpi-volume">$2,481,920.42</div>
+            <div class="flex items-center gap-1 mt-1 text-xs text-emerald-600 font-semibold">
+              <span class="material-symbols-outlined text-[16px]">trending_up</span>
+              <span>+18.4%</span>
+              <span class="text-slate-400 font-normal">vs previous period</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 2 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all">
+          <div class="flex items-center justify-between text-slate-500">
+            <span class="text-xs font-semibold uppercase tracking-wider">Net Settled (USDC/T)</span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="text-2xl font-bold text-slate-900 font-mono" id="kpi-settled">$2,469,508.90</div>
+            <div class="flex items-center gap-1 mt-1 text-xs text-emerald-600 font-semibold">
+              <span class="material-symbols-outlined text-[16px]">shield</span>
+              <span>0% Slippage Protected</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 3 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all">
+          <div class="flex items-center justify-between text-slate-500">
+            <span class="text-xs font-semibold uppercase tracking-wider">Checkout Success</span>
+            <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[18px]">verified</span>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="text-2xl font-bold text-slate-900 font-mono">99.82%</div>
+            <div class="flex items-center gap-1 mt-1 text-xs text-slate-500">
+              <span>8,421 completed of 8,436</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 4 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all">
+          <div class="flex items-center justify-between text-slate-500">
+            <span class="text-xs font-semibold uppercase tracking-wider">Settlement Latency</span>
+            <div class="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[18px]">speed</span>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="text-2xl font-bold text-slate-900 font-mono">1.18s</div>
+            <div class="flex items-center gap-1 mt-1 text-xs text-emerald-600 font-semibold">
+              <span class="material-symbols-outlined text-[16px]">bolt</span>
+              <span>Sub-second routing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Volume & Multi-Chain Distribution -->
+      <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Volume Chart Simulation -->
+        <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs relative">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-base font-bold text-slate-900">Settlement Volume Trajectory</h3>
+                <span
+                  class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span class="material-symbols-outlined text-[13px]">trending_up</span> +18.4%
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Aggregated daily cross-chain payment throughput</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="hidden sm:flex items-center gap-3 text-xs text-slate-500 font-medium">
+                <span class="flex items-center gap-1.5"><span
+                    class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>Current</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-slate-300"></span>Previous</span>
+              </div>
+              <span class="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200"
+                id="chart-avg-badge">
+                Avg $82.7K / Day
+              </span>
+            </div>
+          </div>
+
+          <!-- Interactive SVG Line & Area Chart -->
+          <div class="relative w-full h-56 select-none" id="chart-wrapper">
+            <!-- Floating Hover Tooltip -->
+            <div id="chart-tooltip"
+              class="absolute pointer-events-none z-30 opacity-0 transition-opacity duration-150 bg-slate-900 text-white rounded-xl py-1.5 px-3 shadow-xl text-xs font-medium border border-slate-700 transform -translate-x-1/2 -translate-y-full mb-2">
+              <div class="text-[10px] text-slate-400 font-mono" id="tooltip-date">Sep 08, 2026</div>
+              <div class="text-xs font-bold text-emerald-400 font-mono" id="tooltip-vol">$94,250.00 USDC</div>
+              <div class="text-[10px] text-slate-300" id="tooltip-txs">312 Transactions</div>
+            </div>
+
+            <svg class="w-full h-full overflow-visible" viewBox="0 0 700 200" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgb(109, 87, 227)" stop-opacity="0.32" />
+                  <stop offset="60%" stop-color="rgb(109, 87, 227)" stop-opacity="0.08" />
+                  <stop offset="100%" stop-color="rgb(109, 87, 227)" stop-opacity="0.00" />
+                </linearGradient>
+                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+
+              <!-- Horizontal Grid Lines & Y-Axis Labels -->
+              <g class="text-slate-300" stroke="currentColor" stroke-dasharray="3 3" stroke-width="1">
+                <line x1="45" y1="20" x2="690" y2="20" />
+                <line x1="45" y1="65" x2="690" y2="65" />
+                <line x1="45" y1="110" x2="690" y2="110" />
+                <line x1="45" y1="155" x2="690" y2="155" />
+              </g>
+
+              <g class="text-[10px] fill-slate-400 font-mono select-none" text-anchor="end">
+                <text x="38" y="24">$100k</text>
+                <text x="38" y="69">$75k</text>
+                <text x="38" y="114">$50k</text>
+                <text x="38" y="159">$25k</text>
+              </g>
+
+              <!-- Secondary Comparison Line (Previous Period) -->
+              <path id="chart-prev-path" d="M 50 140 Q 150 150, 250 115 T 450 100 T 650 70 T 690 60" fill="none"
+                stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4" />
+
+              <!-- Primary Area Fill Under Curve -->
+              <path id="chart-area-path"
+                d="M 50 130 C 120 120, 160 85, 230 90 C 300 95, 340 50, 410 45 C 480 40, 520 70, 590 35 C 630 18, 660 30, 690 22 L 690 175 L 50 175 Z"
+                fill="url(#chartGradient)" />
+
+              <!-- Primary Trend Line Curve -->
+              <path id="chart-line-path"
+                d="M 50 130 C 120 120, 160 85, 230 90 C 300 95, 340 50, 410 45 C 480 40, 520 70, 590 35 C 630 18, 660 30, 690 22"
+                fill="none" stroke="rgb(109, 87, 227)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"
+                filter="url(#glow)" />
+
+              <!-- Interactive Data Points / Halos -->
+              <g id="chart-points">
+                <!-- Point 1 -->
+                <circle cx="50" cy="130" r="5" fill="#ffffff" stroke="rgb(109, 87, 227)" stroke-width="3"
+                  class="cursor-pointer hover:r-7 transition-all"
+                  onmouseenter="showTooltip(event, 'Aug 14', '$42,100', '189')" onmouseleave="hideTooltip()" />
+                <!-- Point 2 -->
+                <circle cx="140" cy="100" r="5" fill="#ffffff" stroke="rgb(109, 87, 227)" stroke-width="3"
+                  class="cursor-pointer hover:r-7 transition-all"
+                  onmouseenter="showTooltip(event, 'Aug 21', '$58,400', '230')" onmouseleave="hideTooltip()" />
+                <!-- Point 3 -->
+                <circle cx="230" cy="90" r="5" fill="#ffffff" stroke="rgb(109, 87, 227)" stroke-width="3"
+                  class="cursor-pointer hover:r-7 transition-all"
+                  onmouseenter="showTooltip(event, 'Aug 28', '$64,800', '275')" onmouseleave="hideTooltip()" />
+                <!-- Point 4 -->
+                <circle cx="320" cy="70" r="5" fill="#ffffff" stroke="rgb(109, 87, 227)" stroke-width="3"
+                  class="cursor-pointer hover:r-7 transition-all"
+                  onmouseenter="showTooltip(event, 'Sep 01', '$74,200', '310')" onmouseleave="hideTooltip()" />
+                <!-- Point 5 -->
+                <circle cx="410" cy="45" r="5" fill="#ffffff" stroke="rgb(109, 87, 227)" stroke-width="3"
+                  class="cursor-pointer hover:r-7 transition-all"
+                  onmouseenter="showTooltip(event, 'Sep 04', '$88,900', '360')" onmouseleave="hideTooltip()" />
+                <!-- Point 6 -->
+                <circle cx="500" cy="55" r="5" fill="#ffffff" stroke="rgb(109, 87, 227)" stroke-width="3"
+                  class="cursor-pointer hover:r-7 transition-all"
+                  onmouseenter="showTooltip(event, 'Sep 07', '$82,300', '340')" onmouseleave="hideTooltip()" />
+                <!-- Point 7 -->
+                <circle cx="590" cy="35" r="5" fill="#ffffff" stroke="rgb(109, 87, 227)" stroke-width="3"
+                  class="cursor-pointer hover:r-7 transition-all"
+                  onmouseenter="showTooltip(event, 'Sep 10', '$94,500', '412')" onmouseleave="hideTooltip()" />
+                <!-- Point 8 (Current) -->
+                <circle cx="690" cy="22" r="6" fill="rgb(109, 87, 227)" stroke="#ffffff" stroke-width="3"
+                  class="cursor-pointer animate-pulse"
+                  onmouseenter="showTooltip(event, 'Today (Live)', '$98,420', '428')" onmouseleave="hideTooltip()" />
+              </g>
+            </svg>
+
+            <!-- X-Axis Labels -->
+            <div class="flex justify-between items-center text-[10px] font-mono text-slate-400 pt-2 px-6"
+              id="chart-x-labels">
+              <span>Aug 14</span>
+              <span>Aug 21</span>
+              <span>Aug 28</span>
+              <span>Sep 01</span>
+              <span>Sep 04</span>
+              <span>Sep 07</span>
+              <span>Sep 10</span>
+              <span class="text-blue-700 font-bold">Today</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-chain Distribution -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+          <h3 class="text-base font-bold text-slate-900">Chain Breakdown</h3>
+          <p class="text-xs text-slate-500">Inbound payment distribution across networks</p>
+
+          <div class="space-y-3 pt-2">
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>Ethereum Mainnet</span>
+                <span class="font-mono">54.2% ($1.34M)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-blue-600 h-full rounded-full" style="width: 54.2%;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>Solana (SVM)</span>
+                <span class="font-mono">26.8% ($665K)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-cyan-500 h-full rounded-full" style="width: 26.8%;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>Base Network</span>
+                <span class="font-mono">12.5% ($310K)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-indigo-500 h-full rounded-full" style="width: 12.5%;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>Polygon & Others</span>
+                <span class="font-mono">6.5% ($161K)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-purple-500 h-full rounded-full" style="width: 6.5%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions Table -->
+      <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+        <div class="p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Recent Transactions</h3>
+            <p class="text-xs text-slate-500">Latest inbound customer checkouts and settlement records</p>
+          </div>
+          <a href="merchant-payments.html"
+            class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+            <span>View Full Payments Ledger</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </a>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider">
+                <th class="py-3.5 px-6">Transaction ID</th>
+                <th class="py-3.5 px-6">Customer</th>
+                <th class="py-3.5 px-6">Network</th>
+                <th class="py-3.5 px-6">Gross Amount</th>
+                <th class="py-3.5 px-6">Settled (USDC)</th>
+                <th class="py-3.5 px-6">Status</th>
+                <th class="py-3.5 px-6 text-right">Time</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-4 px-6 font-mono text-blue-600">
+                  <button onclick="copyToClipboard('tx_994821a812', 'Transaction ID')"
+                    class="hover:underline flex items-center gap-1">
+                    tx_994821a812 <span class="material-symbols-outlined text-[14px] text-slate-400">content_copy</span>
+                  </button>
+                </td>
+                <td class="py-4 px-6 font-medium text-slate-900">treasury@cloudvault.io</td>
+                <td class="py-4 px-6">
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-semibold">
+                    Ethereum
+                  </span>
+                </td>
+                <td class="py-4 px-6 font-mono text-slate-900">$4,850.00 (1.701 ETH)</td>
+                <td class="py-4 px-6 font-mono font-bold text-slate-900">4,850.00 USDC</td>
+                <td class="py-4 px-6">
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Settled
+                  </span>
+                </td>
+                <td class="py-4 px-6 text-right text-slate-400 font-mono">2 mins ago</td>
+              </tr>
+
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-4 px-6 font-mono text-blue-600">
+                  <button onclick="copyToClipboard('tx_883190b411', 'Transaction ID')"
+                    class="hover:underline flex items-center gap-1">
+                    tx_883190b411 <span class="material-symbols-outlined text-[14px] text-slate-400">content_copy</span>
+                  </button>
+                </td>
+                <td class="py-4 px-6 font-medium text-slate-900">payments@solanapay.org</td>
+                <td class="py-4 px-6">
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 border border-cyan-200 text-[11px] font-semibold">
+                    Solana
+                  </span>
+                </td>
+                <td class="py-4 px-6 font-mono text-slate-900">$1,250.00 (8.62 SOL)</td>
+                <td class="py-4 px-6 font-mono font-bold text-slate-900">1,250.00 USDC</td>
+                <td class="py-4 px-6">
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Settled
+                  </span>
+                </td>
+                <td class="py-4 px-6 text-right text-slate-400 font-mono">8 mins ago</td>
+              </tr>
+
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-4 px-6 font-mono text-blue-600">
+                  <button onclick="copyToClipboard('tx_772091c503', 'Transaction ID')"
+                    class="hover:underline flex items-center gap-1">
+                    tx_772091c503 <span class="material-symbols-outlined text-[14px] text-slate-400">content_copy</span>
+                  </button>
+                </td>
+                <td class="py-4 px-6 font-medium text-slate-900">finance@basebuilder.xyz</td>
+                <td class="py-4 px-6">
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 text-[11px] font-semibold">
+                    Base
+                  </span>
+                </td>
+                <td class="py-4 px-6 font-mono text-slate-900">$340.00 (0.119 ETH)</td>
+                <td class="py-4 px-6 font-mono font-bold text-slate-900">340.00 USDC</td>
+                <td class="py-4 px-6">
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Settled
+                  </span>
+                </td>
+                <td class="py-4 px-6 text-right text-slate-400 font-mono">24 mins ago</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Payment Link Modal -->
+  <div id="payment-link-modal"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 animate-fade-in">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900">Create New Payment Link</h3>
+        <button onclick="closePaymentLinkModal()" class="text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); generatePaymentLink();" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Invoice Amount (USD)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 font-mono text-sm">$</span>
+            <input type="number" step="0.01" value="250.00" id="modal-invoice-amount" required
+              class="w-full bg-slate-50 border border-slate-300 rounded-lg pl-7 pr-3 py-2 text-sm font-mono text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Settlement Token</label>
+          <select
+            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <option selected>USDC (USD Coin - Circle)</option>
+            <option>USDT (Tether USD)</option>
+            <option>EURC (Euro Coin)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Customer Email (Optional)</label>
+          <input type="email" id="modal-invoice-email" placeholder="customer@enterprise.com"
+            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Payment Description</label>
+          <input type="text" id="modal-invoice-desc" value="Enterprise API Plan - Invoice #9948"
+            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+
+        <div class="pt-2 flex flex-col sm:flex-row items-center gap-2">
+          <button type="submit"
+            class="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 rounded-lg transition-all shadow-sm flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+            <span>Create & Launch Checkout</span>
+          </button>
+          <button type="button" onclick="closePaymentLinkModal()"
+            class="w-full sm:w-auto px-4 py-2.5 border border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="shared/app.js"></script>
+  <script>
+    const chartDatasets = {
+      today: {
+        avg: 'Avg $84.3K / Day',
+        line: 'M 50 150 C 130 145, 180 120, 260 110 C 340 100, 390 70, 470 60 C 550 50, 600 40, 690 20',
+        area: 'M 50 150 C 130 145, 180 120, 260 110 C 340 100, 390 70, 470 60 C 550 50, 600 40, 690 20 L 690 175 L 50 175 Z',
+        labels: ['00:00', '04:00', '08:00', '12:00', '15:00', '18:00', '21:00', 'Now'],
+        points: [
+          { cx: 50, cy: 150, date: '00:00', val: '$8,400', txs: '34' },
+          { cx: 140, cy: 135, date: '04:00', val: '$14,200', txs: '58' },
+          { cx: 230, cy: 115, date: '08:00', val: '$28,900', txs: '120' },
+          { cx: 320, cy: 95, date: '12:00', val: '$44,100', txs: '185' },
+          { cx: 410, cy: 75, date: '15:00', val: '$58,700', txs: '254' },
+          { cx: 500, cy: 60, date: '18:00', val: '$69,400', txs: '305' },
+          { cx: 590, cy: 40, date: '21:00', val: '$78,900', txs: '380' },
+          { cx: 690, cy: 20, date: 'Now', val: '$84,290', txs: '428' }
+        ]
+      },
+      '7d': {
+        avg: 'Avg $84.6K / Day',
+        line: 'M 50 140 C 120 130, 180 90, 250 85 C 320 80, 380 60, 460 55 C 540 50, 600 30, 690 22',
+        area: 'M 50 140 C 120 130, 180 90, 250 85 C 320 80, 380 60, 460 55 C 540 50, 600 30, 690 22 L 690 175 L 50 175 Z',
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Today'],
+        points: [
+          { cx: 50, cy: 140, date: 'Mon', val: '$68,200', txs: '290' },
+          { cx: 140, cy: 110, date: 'Tue', val: '$74,500', txs: '315' },
+          { cx: 230, cy: 85, date: 'Wed', val: '$82,100', txs: '350' },
+          { cx: 320, cy: 70, date: 'Thu', val: '$89,400', txs: '380' },
+          { cx: 410, cy: 55, date: 'Fri', val: '$92,000', txs: '395' },
+          { cx: 500, cy: 48, date: 'Sat', val: '$86,100', txs: '360' },
+          { cx: 590, cy: 30, date: 'Sun', val: '$95,800', txs: '410' },
+          { cx: 690, cy: 22, date: 'Today', val: '$98,420', txs: '428' }
+        ]
+      },
+      '30d': {
+        avg: 'Avg $82.7K / Day',
+        line: 'M 50 130 C 120 120, 160 85, 230 90 C 300 95, 340 50, 410 45 C 480 40, 520 70, 590 35 C 630 18, 660 30, 690 22',
+        area: 'M 50 130 C 120 120, 160 85, 230 90 C 300 95, 340 50, 410 45 C 480 40, 520 70, 590 35 C 630 18, 660 30, 690 22 L 690 175 L 50 175 Z',
+        labels: ['Aug 14', 'Aug 21', 'Aug 28', 'Sep 01', 'Sep 04', 'Sep 07', 'Sep 10', 'Today'],
+        points: [
+          { cx: 50, cy: 130, date: 'Aug 14', val: '$42,100', txs: '189' },
+          { cx: 140, cy: 100, date: 'Aug 21', val: '$58,400', txs: '230' },
+          { cx: 230, cy: 90, date: 'Aug 28', val: '$64,800', txs: '275' },
+          { cx: 320, cy: 70, date: 'Sep 01', val: '$74,200', txs: '310' },
+          { cx: 410, cy: 45, date: 'Sep 04', val: '$88,900', txs: '360' },
+          { cx: 500, cy: 55, date: 'Sep 07', val: '$82,300', txs: '340' },
+          { cx: 590, cy: 35, date: 'Sep 10', val: '$94,500', txs: '412' },
+          { cx: 690, cy: 22, date: 'Today', val: '$98,420', txs: '428' }
+        ]
+      },
+      '90d': {
+        avg: 'Avg $79.1K / Day',
+        line: 'M 50 160 C 140 150, 200 120, 280 110 C 360 100, 440 60, 520 50 C 600 40, 650 30, 690 18',
+        area: 'M 50 160 C 140 150, 200 120, 280 110 C 360 100, 440 60, 520 50 C 600 40, 650 30, 690 18 L 690 175 L 50 175 Z',
+        labels: ['Jun 26', 'Jul 10', 'Jul 24', 'Aug 07', 'Aug 21', 'Sep 04', 'Sep 11', 'Today'],
+        points: [
+          { cx: 50, cy: 160, date: 'Jun 26', val: '$28,400', txs: '120' },
+          { cx: 140, cy: 140, date: 'Jul 10', val: '$39,800', txs: '165' },
+          { cx: 230, cy: 120, date: 'Jul 24', val: '$51,200', txs: '215' },
+          { cx: 320, cy: 95, date: 'Aug 07', val: '$68,400', txs: '280' },
+          { cx: 410, cy: 75, date: 'Aug 21', val: '$79,800', txs: '330' },
+          { cx: 500, cy: 50, date: 'Sep 04', val: '$89,100', txs: '375' },
+          { cx: 590, cy: 30, date: 'Sep 11', val: '$96,300', txs: '415' },
+          { cx: 690, cy: 18, date: 'Today', val: '$104,200', txs: '445' }
+        ]
+      }
+    };
+
+    function showTooltip(evt, date, vol, txs) {
+      const tooltip = document.getElementById('chart-tooltip');
+      const wrapper = document.getElementById('chart-wrapper');
+      const rect = wrapper.getBoundingClientRect();
+      const circle = evt.target;
+
+      const cx = parseFloat(circle.getAttribute('cx'));
+      const cy = parseFloat(circle.getAttribute('cy'));
+
+      const leftPercent = (cx / 700) * 100;
+      const topPercent = (cy / 200) * 100;
+
+      document.getElementById('tooltip-date').innerText = date;
+      document.getElementById('tooltip-vol').innerText = `${vol} USDC`;
+      document.getElementById('tooltip-txs').innerText = `${txs} Transactions`;
+
+      tooltip.style.left = `${leftPercent}%`;
+      tooltip.style.top = `${topPercent}%`;
+      tooltip.style.opacity = '1';
+    }
+
+    function hideTooltip() {
+      const tooltip = document.getElementById('chart-tooltip');
+      tooltip.style.opacity = '0';
+    }
+
+    function setTimeframe(tf) {
+      document.querySelectorAll('#timeframe-selector .tf-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-slate-100', 'text-blue-700', 'font-bold');
+        btn.classList.add('text-slate-600');
+      });
+      event.target.classList.add('active', 'bg-slate-100', 'text-blue-700', 'font-bold');
+      event.target.classList.remove('text-slate-600');
+
+      if (tf === 'today') {
+        document.getElementById('kpi-volume').innerText = '$84,290.00';
+        document.getElementById('kpi-settled').innerText = '$84,290.00';
+      } else if (tf === '7d') {
+        document.getElementById('kpi-volume').innerText = '$592,400.10';
+        document.getElementById('kpi-settled').innerText = '$589,800.00';
+      } else if (tf === '30d') {
+        document.getElementById('kpi-volume').innerText = '$2,481,920.42';
+        document.getElementById('kpi-settled').innerText = '$2,469,508.90';
+      } else if (tf === '90d') {
+        document.getElementById('kpi-volume').innerText = '$7,120,450.00';
+        document.getElementById('kpi-settled').innerText = '$7,088,200.00';
+      }
+
+      const dataset = chartDatasets[tf];
+      if (dataset) {
+        document.getElementById('chart-avg-badge').innerText = dataset.avg;
+        document.getElementById('chart-line-path').setAttribute('d', dataset.line);
+        document.getElementById('chart-area-path').setAttribute('d', dataset.area);
+
+        // Update X Labels
+        const labelsContainer = document.getElementById('chart-x-labels');
+        labelsContainer.innerHTML = dataset.labels.map((l, i) =>
+          `<span class="${i === dataset.labels.length - 1 ? 'text-blue-700 font-bold' : ''}">${l}</span>`
+        ).join('');
+
+        // Update Points
+        const pointsContainer = document.getElementById('chart-points');
+        pointsContainer.innerHTML = dataset.points.map((p, idx) => {
+          const isLast = idx === dataset.points.length - 1;
+          return `<circle cx="${p.cx}" cy="${p.cy}" r="${isLast ? 6 : 5}" fill="${isLast ? 'rgb(109, 87, 227)' : '#ffffff'}" stroke="${isLast ? '#ffffff' : 'rgb(109, 87, 227)'}" stroke-width="3" class="cursor-pointer ${isLast ? 'animate-pulse' : 'hover:r-7 transition-all'}" onmouseenter="showTooltip(event, '${p.date}', '${p.val}', '${p.txs}')" onmouseleave="hideTooltip()" />`;
+        }).join('');
+      }
+
+      CredettToast.show(`Settlement trajectory re-rendered for ${tf.toUpperCase()} period.`, 'info');
+    }
+
+    function openPaymentLinkModal() {
+      document.getElementById('payment-link-modal').classList.remove('hidden');
+    }
+
+    function closePaymentLinkModal() {
+      document.getElementById('payment-link-modal').classList.add('hidden');
+    }
+
+    function generatePaymentLink() {
+      const amount = parseFloat(document.getElementById('modal-invoice-amount').value) || 250.00;
+      const desc = document.getElementById('modal-invoice-desc')?.value || 'Enterprise API Plan - Invoice #9948';
+      const invId = `inv_${Math.random().toString(36).substring(2, 9)}`;
+      closePaymentLinkModal();
+
+      const checkoutUrl = `checkout.html?amount=${amount.toFixed(2)}&inv=${invId}&desc=${encodeURIComponent(desc)}`;
+      copyToClipboard(`https://pay.credett.io/checkout/${invId}`, `Payment link created for $${amount.toFixed(2)}: checkout.html/${invId}`);
+
+      CredettToast.show(`Payment link created for $${amount.toFixed(2)}. Launching checkout...`, 'success', 2000);
+      setTimeout(() => {
+        window.location.href = checkoutUrl;
+      }, 900);
+    }
+  </script>
+</body>
+
+</html>
