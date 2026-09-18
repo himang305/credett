@@ -674,20 +674,18 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
           class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold mb-3">
           INSTITUTIONAL GRADE
         </div>
-        <h2 class="text-3xl font-bold text-slate-900">Regulated & Non-Custodial Architecture</h2>
-        <p class="text-sm text-slate-600 mt-2">Credett provides non-custodial treasury infrastructure so your enterprise
-          retains absolute control.</p>
+        <h2 class="text-3xl font-bold text-slate-900">Enterprise MPC & Bank-Grade Vault Architecture</h2>
+        <p class="text-sm text-slate-600 mt-2">Every merchant and sub-account wallet is isolated in hardware-backed MPC vaults with programmable governance and automated liquidity sweeps.</p>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-6">
+      <div class="grid md:grid-cols-3 gap-6 mb-12">
         <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-xs hover:shadow-md transition-all">
           <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
             <span class="material-symbols-outlined text-[24px]">key</span>
           </div>
           <h3 class="text-base font-bold text-slate-900 mb-2">Fireblocks MPC Vaults</h3>
           <p class="text-xs text-slate-600 leading-relaxed">
-            Multi-Party Computation key management with automated zero-trust authorization policies and hardware enclave
-            protection.
+            Multi-Party Computation key management eliminating single points of failure, backed by hardware-isolated Intel SGX enclaves.
           </p>
         </div>
 
@@ -711,6 +709,72 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
             Strict enterprise data privacy, continuous external penetration audits, and 99.99% multi-region cloud
             availability.
           </p>
+        </div>
+      </div>
+
+      <!-- Dedicated Fireblocks MPC Deep-Dive Card -->
+      <div class="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 rounded-3xl p-8 sm:p-12 text-white border border-slate-800 shadow-2xl relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="relative z-10 grid lg:grid-cols-12 gap-10 items-center">
+          <div class="lg:col-span-6 space-y-5">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-400 text-xs font-bold uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+              Secured by Fireblocks MPC
+            </div>
+            <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+              Trusted by Tier-1 Global Banks, Exchanges & Payment Leaders
+            </h3>
+            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+              Credett partners directly with <span class="text-white font-semibold">Fireblocks</span> to provide institutional-grade custody and transaction authorization. Every merchant deposit address is generated inside dedicated MPC key shares—ensuring zero private key exposure and automated protection against internal and external threats.
+            </p>
+
+            <div class="grid grid-cols-2 gap-4 pt-2">
+              <div class="p-3.5 bg-slate-800/60 rounded-xl border border-slate-700/60">
+                <div class="text-blue-400 font-bold text-lg font-mono mb-0.5">$6T+</div>
+                <div class="text-[11px] text-slate-400 font-medium">Secured transaction volume on Fireblocks network</div>
+              </div>
+              <div class="p-3.5 bg-slate-800/60 rounded-xl border border-slate-700/60">
+                <div class="text-emerald-400 font-bold text-lg font-mono mb-0.5">EAL6+</div>
+                <div class="text-[11px] text-slate-400 font-medium">Hardware security modules & enclaves</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 space-y-4">
+            <div class="bg-slate-800/80 rounded-2xl p-5 border border-slate-700/80 space-y-3.5 backdrop-blur-md">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[20px]">account_balance</span>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-white">Bank-Grade Isolation & Policy Engine</h4>
+                  <p class="text-xs text-slate-400 mt-0.5">Automated multi-layer signing rules, velocity controls, and customizable governance for each merchant vault.</p>
+                </div>
+              </div>
+
+              <div class="border-t border-slate-700/60 pt-3 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[20px]">sync_alt</span>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-white">Automated Merchant Sweeps</h4>
+                  <p class="text-xs text-slate-400 mt-0.5">Funds deposited to user addresses are instantly swept to merchant settlement vaults without manual signing or gas management.</p>
+                </div>
+              </div>
+
+              <div class="border-t border-slate-700/60 pt-3 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[20px]">security</span>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-white">Institutional Asset Insurance</h4>
+                  <p class="text-xs text-slate-400 mt-0.5">Backed by comprehensive digital asset insurance covering assets in transit and in storage.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
