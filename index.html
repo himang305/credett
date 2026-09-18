@@ -8,6 +8,14 @@
   <meta name="description"
     content="Accept 100+ crypto assets across 10+ chains. Volatility-free instant stablecoin settlement with Fireblocks institutional vault security.">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function () {
+      emailjs.init({
+        publicKey: "nenCWcttkB1FexBL_",
+      });
+    })();
+  </script>
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     rel="stylesheet">
@@ -46,44 +54,80 @@
 
   <!-- Main Institutional Navigation -->
   <header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/90 shadow-xs">
-    <div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3 group">
+    <div class="h-16 sm:h-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between gap-2">
+      <a href="index.html" class="flex items-center gap-2.5 sm:gap-3 group shrink-0">
         <div
-          class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-all shadow-xs">
-          <span class="material-symbols-outlined text-[24px]">shield_locked</span>
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-all shadow-xs">
+          <span class="material-symbols-outlined text-[20px] sm:text-[24px]">shield_locked</span>
         </div>
         <div class="flex flex-col">
-          <span class="text-xl font-bold tracking-tight text-slate-900 font-headline-md leading-none">CREDETT</span>
-          <span class="text-[10px] tracking-widest uppercase text-blue-600 font-mono font-bold mt-0.5">Web3
+          <span class="text-lg sm:text-xl font-bold tracking-tight text-slate-900 font-headline-md leading-none">CREDETT</span>
+          <span class="text-[9px] sm:text-[10px] tracking-widest uppercase text-blue-600 font-mono font-bold mt-0.5">Web3
             Payments</span>
         </div>
       </a>
 
-      <!-- Navigation Links -->
-      <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold">
+      <!-- Navigation Links (Desktop) -->
+      <nav class="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-semibold">
         <a class="text-slate-600 hover:text-slate-900 transition-colors" href="#features">Infrastructure</a>
         <a class="text-slate-600 hover:text-slate-900 transition-colors" href="#simulator">Live Simulator</a>
         <a class="text-slate-600 hover:text-slate-900 transition-colors" href="#calculator">Fee Calculator</a>
         <a class="text-slate-600 hover:text-slate-900 transition-colors" href="#developers">Developers</a>
         <a class="text-slate-600 hover:text-slate-900 transition-colors" href="#security">Security</a>
+        <button type="button" onclick="openContactModal()"
+          class="text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1 font-semibold">
+          Contact Us
+        </button>
       </nav>
 
       <!-- Action Buttons -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        <button type="button" onclick="openContactModal()"
+          class="hidden sm:inline-flex lg:hidden text-xs font-semibold text-slate-700 hover:text-blue-600 px-2.5 py-1.5 rounded-lg border border-slate-200 transition-colors">
+          Contact Us
+        </button>
         <a href="auth.html"
-          class="text-sm font-semibold text-slate-700 hover:text-slate-900 px-4 py-2 transition-colors">
+          class="hidden sm:inline-block text-xs sm:text-sm font-semibold text-slate-700 hover:text-slate-900 px-2.5 sm:px-4 py-2 transition-colors">
           Sign In
         </a>
         <a href="auth.html"
-          class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2">
+          class="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 sm:gap-2">
           <span>Get Started</span>
-          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          <span class="material-symbols-outlined text-[14px] sm:text-[16px]">arrow_forward</span>
+        </a>
+        <!-- Mobile Menu Toggle Button -->
+        <button type="button" id="mobile-menu-btn" onclick="toggleMobileMenu()"
+          class="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors" aria-label="Toggle Navigation Menu">
+          <span class="material-symbols-outlined text-[24px]" id="mobile-menu-icon">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer / Dropdown -->
+    <div id="mobile-menu-drawer" class="hidden lg:hidden border-t border-slate-100 bg-white/98 backdrop-blur-xl px-4 py-4 space-y-3 shadow-lg">
+      <nav class="flex flex-col space-y-2 text-sm font-semibold text-slate-700">
+        <a class="px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#features" onclick="toggleMobileMenu(false)">Infrastructure</a>
+        <a class="px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#simulator" onclick="toggleMobileMenu(false)">Live Simulator</a>
+        <a class="px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#calculator" onclick="toggleMobileMenu(false)">Fee Calculator</a>
+        <a class="px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#developers" onclick="toggleMobileMenu(false)">Developers</a>
+        <a class="px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#security" onclick="toggleMobileMenu(false)">Security</a>
+        <button type="button" onclick="toggleMobileMenu(false); openContactModal();"
+          class="text-left px-3 py-2 rounded-lg hover:bg-blue-50 text-blue-600 font-semibold transition-colors flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">mail</span> Contact Us
+        </button>
+      </nav>
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+        <a href="auth.html" class="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-2">
+          Merchant Sign In
+        </a>
+        <a href="auth.html" class="text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg shadow-xs">
+          Open Account
         </a>
       </div>
     </div>
   </header>
 
-  <main class="w-full pt-20 flex-grow">
+  <main class="w-full pt-16 sm:pt-20 flex-grow">
     <!-- 1. Hero Section -->
     <section class="relative overflow-hidden pt-16 pb-20 px-6 lg:px-12 max-w-7xl mx-auto w-full">
       <!-- Ambient light glow -->
@@ -111,7 +155,7 @@
           </h1>
 
           <p class="text-base sm:text-lg text-slate-600 font-normal max-w-xl mb-8 leading-relaxed">
-            Institutional-grade crypto payment gateway designed for high-frequency commerce. Eliminate price volatility
+            Institutional-grade crypto payments designed for high-frequency commerce. Eliminate price volatility
             with automated non-custodial conversion, sub-second routing, and compliant treasury vaults.
           </p>
 
@@ -147,8 +191,9 @@
 
         <!-- Interactive Hero Card: Live Payment Simulator -->
         <div class="lg:col-span-5" id="simulator">
-          <div class="bg-white p-6 sm:p-7 rounded-2xl border border-slate-200 shadow-xl relative overflow-hidden transition-all min-h-[480px] flex flex-col justify-between">
-            
+          <div
+            class="bg-white p-6 sm:p-7 rounded-2xl border border-slate-200 shadow-xl relative overflow-hidden transition-all min-h-[480px] flex flex-col justify-between">
+
             <!-- Top Simulator Header -->
             <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100">
               <div class="flex items-center gap-2.5">
@@ -156,7 +201,9 @@
                 <span class="text-sm font-bold text-slate-900 tracking-wide">Live Payment Simulator</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <span class="text-[10px] text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded font-mono font-bold uppercase" id="sim-step-badge">Step 1 of 3</span>
+                <span
+                  class="text-[10px] text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded font-mono font-bold uppercase"
+                  id="sim-step-badge">Step 1 of 3</span>
               </div>
             </div>
 
@@ -189,7 +236,8 @@
               <div>
                 <label class="text-xs text-slate-600 block mb-1.5 font-semibold">2. Invoice Amount (USD):</label>
                 <div class="relative">
-                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm font-mono">$</span>
+                  <span
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm font-mono">$</span>
                   <input type="number" id="sim-amount-input" value="350" oninput="updateSimCalculations()"
                     class="w-full bg-slate-50 border border-slate-300 text-slate-900 pl-8 pr-4 py-2 rounded-xl text-sm font-mono focus:bg-white focus:border-blue-600 focus:outline-none">
                 </div>
@@ -230,8 +278,10 @@
               </div>
 
               <!-- Dynamic QR Code Representation -->
-              <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center justify-center relative group">
-                <div class="w-36 h-36 bg-white p-2 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center relative">
+              <div
+                class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center justify-center relative group">
+                <div
+                  class="w-36 h-36 bg-white p-2 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center relative">
                   <svg viewBox="0 0 100 100" class="w-full h-full">
                     <!-- QR Pattern Mock -->
                     <rect x="0" y="0" width="30" height="30" rx="4" fill="#0f172a" />
@@ -257,16 +307,19 @@
                     <!-- Center Badge -->
                     <circle cx="50" cy="50" r="12" fill="#0f172a" />
                     <circle cx="50" cy="50" r="9" fill="#6d57e3" />
-                    <text x="50" y="54" text-anchor="middle" fill="white" font-size="10" font-weight="bold" id="sim-qr-icon-text">Ξ</text>
+                    <text x="50" y="54" text-anchor="middle" fill="white" font-size="10" font-weight="bold"
+                      id="sim-qr-icon-text">Ξ</text>
                   </svg>
                 </div>
 
                 <div class="mt-2.5 w-full">
                   <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
                     <span>Temporary Vault Address</span>
-                    <span class="text-blue-600 font-semibold cursor-pointer hover:underline" onclick="copyToClipboard('0x88f29c11894ba2d00192e8a71920ac3491829a12', 'Vault Address')">Copy</span>
+                    <span class="text-blue-600 font-semibold cursor-pointer hover:underline"
+                      onclick="copyToClipboard('0x88f29c11894ba2d00192e8a71920ac3491829a12', 'Vault Address')">Copy</span>
                   </div>
-                  <div class="p-2 bg-white rounded-lg border border-slate-200 text-slate-800 font-mono text-[11px] truncate select-all text-center">
+                  <div
+                    class="p-2 bg-white rounded-lg border border-slate-200 text-slate-800 font-mono text-[11px] truncate select-all text-center">
                     0x88f29c11894b...9a12
                   </div>
                 </div>
@@ -301,20 +354,26 @@
               </div>
 
               <div>
-                <h3 class="text-sm font-bold text-slate-900 tracking-tight" id="sim-detecting-title">Listening for Mempool Broadcast...</h3>
-                <p class="text-xs text-slate-500 mt-1" id="sim-detecting-desc">Streaming live Fireblocks RPC validator nodes</p>
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight" id="sim-detecting-title">Listening for
+                  Mempool Broadcast...</h3>
+                <p class="text-xs text-slate-500 mt-1" id="sim-detecting-desc">Streaming live Fireblocks RPC validator
+                  nodes</p>
               </div>
 
               <!-- Real-time telemetry log feed -->
-              <div class="bg-slate-950 rounded-xl p-3.5 text-left font-mono text-[11px] text-slate-300 space-y-1.5 shadow-inner max-h-36 overflow-y-auto" id="sim-telemetry-feed">
+              <div
+                class="bg-slate-950 rounded-xl p-3.5 text-left font-mono text-[11px] text-slate-300 space-y-1.5 shadow-inner max-h-36 overflow-y-auto"
+                id="sim-telemetry-feed">
                 <div class="text-emerald-400 flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> [0.1s] TX Broadcasted to Network
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> [0.1s] TX Broadcasted to
+                  Network
                 </div>
                 <div class="text-blue-300 flex items-center gap-1.5" id="sim-log-2">
                   <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> [0.6s] Mempool signature verified
                 </div>
                 <div class="text-slate-500 flex items-center gap-1.5" id="sim-log-3">
-                  <span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> [1.2s] Automated DEX liquidity lock (USDC)...
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> [1.2s] Automated DEX liquidity lock
+                  (USDC)...
                 </div>
               </div>
             </div>
@@ -323,16 +382,19 @@
             <!-- STAGE 4: SETTLED & VERIFIED IN MERCHANT VAULT               -->
             <!-- ============================================================ -->
             <div id="sim-stage-success" class="space-y-4 hidden animate-fade-in text-center py-2">
-              <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+              <div
+                class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
                 <span class="material-symbols-outlined text-[32px]">check_circle</span>
               </div>
 
               <div>
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold uppercase mb-1">
+                <span
+                  class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold uppercase mb-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Confirmed & Settled
                 </span>
                 <h3 class="text-base font-bold text-slate-900">Payment Successfully Routed!</h3>
-                <div class="text-xl font-extrabold font-mono text-emerald-600 mt-1" id="sim-success-amount">+$350.00 USDC</div>
+                <div class="text-xl font-extrabold font-mono text-emerald-600 mt-1" id="sim-success-amount">+$350.00
+                  USDC</div>
               </div>
 
               <!-- Summary Card -->
@@ -364,7 +426,7 @@
               </div>
             </div>
 
-      </div>
+          </div>
     </section>
 
     <!-- 2. Interactive Multi-Chain Network Grid -->
@@ -471,7 +533,7 @@
               class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
               TRANSPARENT VALUE
             </div>
-            <h2 class="text-3xl sm:text-4xl font-bold text-slate-900">Calculate your annual payment gateway savings</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-slate-900">Calculate your annual payment savings</h2>
             <p class="text-sm text-slate-600 leading-relaxed">
               Traditional card networks and international processors charge up to 3.5% + foreign exchange spread +
               chargeback fees. Credett charges a flat 0.4% with zero chargeback risk.
@@ -684,7 +746,7 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
         <div class="flex items-center gap-2 text-slate-900 font-bold text-base mb-3">
           <span class="material-symbols-outlined text-blue-600">shield_locked</span> CREDETT
         </div>
-        <p class="text-slate-500 leading-relaxed">Next-generation Web3 payment gateway and stablecoin settlement
+        <p class="text-slate-500 leading-relaxed">Next-generation Web3 payments and stablecoin settlement
           infrastructure.</p>
       </div>
       <div>
@@ -708,12 +770,14 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
         <p class="text-slate-500 mb-2">SOC-2 Type II Certified • Fireblocks Insured • Chainalysis Screened</p>
         <ul class="space-y-1.5 mt-2 text-xs">
           <li>
-            <button type="button" onclick="openLegalModal('privacy')" class="text-slate-600 hover:text-blue-600 font-medium transition-colors flex items-center gap-1">
+            <button type="button" onclick="openLegalModal('privacy')"
+              class="text-slate-600 hover:text-blue-600 font-medium transition-colors flex items-center gap-1">
               <span class="material-symbols-outlined text-[14px]">verified_user</span> Privacy Policy
             </button>
           </li>
           <li>
-            <button type="button" onclick="openLegalModal('terms')" class="text-slate-600 hover:text-blue-600 font-medium transition-colors flex items-center gap-1">
+            <button type="button" onclick="openLegalModal('terms')"
+              class="text-slate-600 hover:text-blue-600 font-medium transition-colors flex items-center gap-1">
               <span class="material-symbols-outlined text-[14px]">gavel</span> Terms of Use
             </button>
           </li>
@@ -722,12 +786,15 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
     </div>
 
     <!-- Bottom Copyright & Legal Links -->
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400">
+    <div
+      class="max-w-7xl mx-auto px-6 lg:px-12 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400">
       <div>© 2026 Credett Infrastructure Ltd. All rights reserved.</div>
       <div class="flex items-center gap-4 text-xs">
-        <button type="button" onclick="openLegalModal('privacy')" class="hover:text-slate-700 transition-colors">Privacy Policy</button>
+        <button type="button" onclick="openLegalModal('privacy')" class="hover:text-slate-700 transition-colors">Privacy
+          Policy</button>
         <span>•</span>
-        <button type="button" onclick="openLegalModal('terms')" class="hover:text-slate-700 transition-colors">Terms of Use</button>
+        <button type="button" onclick="openLegalModal('terms')" class="hover:text-slate-700 transition-colors">Terms of
+          Use</button>
         <span>•</span>
         <span class="text-emerald-600 font-semibold flex items-center gap-1">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Systems 100% Operational
@@ -737,11 +804,89 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
   </footer>
 
   <!-- ============================================================ -->
+  <!-- CONTACT US MODAL (EMAILJS POWERED)                           -->
+  <!-- ============================================================ -->
+  <div id="contact-modal"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div
+      class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden animate-fade-in">
+
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[22px]">mail</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Contact Us</h3>
+            <span class="text-[11px] text-slate-500">Reach our global payments & integration team</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeContactModal()"
+          class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Contact Form -->
+      <form id="contact-form" class="p-6 overflow-y-auto space-y-4">
+        <!-- Timestamp hidden field -->
+        <input type="hidden" name="time" id="contact-form-time" value="">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Full Name <span
+              class="text-red-500">*</span></label>
+          <input type="text" name="name" id="contact-name" required placeholder="e.g. Satoshi Nakamoto"
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Business Email <span
+              class="text-red-500">*</span></label>
+          <input type="email" name="email" id="contact-email" required placeholder="name@company.com"
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Phone Number</label>
+          <input type="tel" name="phone" id="contact-phone" placeholder="+1 (555) 000-0000"
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Subject</label>
+          <input type="text" name="title" id="contact-title" placeholder="Integration Inquiry / Custom Pricing"
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Message</label>
+          <textarea name="message" id="contact-message" rows="3"
+            placeholder="Tell us about your business payment volume or integration requirements..."
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none transition-all resize-none"></textarea>
+        </div>
+
+        <div id="contact-status-msg" class="text-xs font-medium hidden"></div>
+
+        <div class="pt-2">
+          <button type="submit" id="contact-submit-btn"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-sm">
+            <span id="contact-btn-text">Send Message</span>
+            <span class="material-symbols-outlined text-[18px]">send</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
   <!-- LEGAL MODAL (PRIVACY POLICY & TERMS OF USE)                  -->
   <!-- ============================================================ -->
-  <div id="legal-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-fade-in">
-      
+  <div id="legal-modal"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div
+      class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-fade-in">
+
       <!-- Modal Header -->
       <div class="p-6 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/50">
         <div class="flex items-center gap-3">
@@ -750,10 +895,11 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
           </div>
           <div>
             <h3 class="text-base font-bold text-slate-900" id="legal-modal-title">Privacy Policy</h3>
-            <span class="text-[11px] text-slate-500">Credett Web3 Payment Gateway • Version 3.2 (Effective March 2026)</span>
+            <span class="text-[11px] text-slate-500">Credett Web3 Payments • Version 3.2 (Effective March 2026)</span>
           </div>
         </div>
-        <button type="button" onclick="closeLegalModal()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+        <button type="button" onclick="closeLegalModal()"
+          class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
@@ -771,7 +917,8 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
       </div>
 
       <!-- Scrollable Body Content -->
-      <div class="p-6 sm:p-8 overflow-y-auto space-y-6 text-slate-700 text-xs leading-relaxed flex-1" id="legal-modal-content">
+      <div class="p-6 sm:p-8 overflow-y-auto space-y-6 text-slate-700 text-xs leading-relaxed flex-1"
+        id="legal-modal-content">
         <!-- Injected dynamically via switchLegalTab() -->
       </div>
 
@@ -808,7 +955,7 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
     function updateSimCalculations() {
       const amount = parseFloat(document.getElementById('sim-amount-input').value) || 0;
       const cryptoAmount = (amount / tokenPrice).toFixed(selectedToken === 'USDC' ? 2 : 4);
-      
+
       const cryptoDisplay = `${cryptoAmount} ${selectedToken}`;
       const settledDisplay = `${amount.toFixed(2)} USDC`;
 
@@ -860,7 +1007,7 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
 
     function startOnchainDetection() {
       goToSimStage('detecting');
-      
+
       const feed = document.getElementById('sim-telemetry-feed');
       const title = document.getElementById('sim-detecting-title');
       const desc = document.getElementById('sim-detecting-desc');
@@ -902,10 +1049,10 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
       }, 2300);
 
       setTimeout(() => {
-        const randHash = '0x' + Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join('');
+        const randHash = '0x' + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
         const hashEl = document.getElementById('sim-success-txhash');
         if (hashEl) hashEl.innerText = `${randHash.slice(0, 8)}...${randHash.slice(-6)}`;
-        
+
         goToSimStage('success');
         CredettToast.show(`Simulation completed! Settled $${amount.toFixed(2)} USDC directly into Fireblocks vault.`, 'success', 4000);
       }, 3100);
@@ -960,58 +1107,187 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
     // ============================================================
     const legalContents = {
       privacy: `
-        <div class="space-y-4">
+        <div class="space-y-4 text-xs leading-relaxed text-slate-600">
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">1. Information We Collect</h4>
-            <p>Credett Infrastructure Ltd. ("Credett", "we", "our") operates non-custodial crypto payment gateway software. We collect organizational identity data during institutional KYB verification (commercial registry extracts, corporate email, beneficial ownership disclosures), technical API logging telemetry, and public on-chain blockchain addresses.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">1. Introduction</h4>
+            <p>Credett, a brand operating the domain name "Credett.com" and having its registered office at "30 N Gould St Ste R Sheridan, WY 82801", hereinafter referred to as the "Company" (where such expression shall, unless repugnant to the context thereof, be deemed to include its respective legal heirs, representatives, administrators, permitted successors and assigns).</p>
+            <p class="mt-2">Please note that our Services and Site are not intended for minors below the age of 18 years and we do not knowingly collect data relating to minors.</p>
           </div>
 
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">2. Non-Custodial Architecture & Cryptographic Key Security</h4>
-            <p>Credett does not hold, store, or have access to merchant private keys or end-customer wallet seeds. All multi-chain settlement routing is executed through smart contract relays, decentralized liquidity pools, and merchant-designated Fireblocks MPC treasury vaults.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">2. Purpose</h4>
+            <p>This Privacy Policy aims to give you information on why and how we collect and process your personal data. This Privacy Policy informs you about your privacy rights and how the data protection principles set out in the California Consumer Privacy Act ("CCPA"), the Indian Information Technology (Intermediaries guidelines) Rules, 2021, the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021, the Information Technology (Reasonable security practices and procedures and sensitive personal data or information) Rules, 2011 of Information Technology Act, 2000, EU General Data Protection Regulation ("GDPR") and the post-Brexit privacy law (UK GDPR) protect you.</p>
+            <p class="mt-2">Please note that all or part of our Services may not be available in your region.</p>
           </div>
 
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">3. Automated AML & Sanctions Screening</h4>
-            <p>In compliance with international financial regulations (FATF Travel Rule, OFAC, FinSA), inbound cryptocurrency payment addresses are screened in real time via our Chainalysis KYT integration. We do not sell or monetize transaction metadata to third-party advertising networks.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">3. Who we are</h4>
+            <p class="font-semibold text-slate-800">Data Controller:</p>
+            <p>The controller of your personal data is Eclectt services, a company incorporated under the laws of India, with a registered address: 30 N Gould St Ste R Sheridan, WY 82801. This brand is responsible for handling of your personal data related to the use of our products, services or applications.</p>
+            <p class="font-semibold text-slate-800 mt-2">Data Protection Officer:</p>
+            <p>We have appointed a Data Protection Officer ("DPO") who is responsible for overseeing questions in relation to this Privacy Policy. Contact: <a href="mailto:eclecttcorp@outlook.com" class="text-blue-600 hover:underline font-mono">eclecttcorpatoutlook.com</a></p>
           </div>
 
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">4. Data Retention & Security Protocols</h4>
-            <p>Corporate compliance documentation is stored with AES-256 encryption within SOC-2 Type II certified data centers. In accordance with statutory tax and auditing standards, settlement ledger summaries are retained for seven (7) years.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">4. What data we collect from you</h4>
+            <p>We collect various categories of personal data including Identity Data (name, profile picture, social media accounts), Contact Data (email, phone), Financial Data (payment cards, virtual currency accounts), Transactional Data, Technical Data (IP address, device type, browser information), and Usage Data (how you use our Services).</p>
           </div>
 
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">5. Contact & Data Protection Officer</h4>
-            <p>For inquiries regarding GDPR rights, data deletion requests, or compliance disclosures, contact our privacy officers at <span class="font-mono text-blue-600 font-semibold">compliance@credett.io</span>.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">5. How we collect your data</h4>
+            <p>We collect information through direct interactions (forms, email), automated technologies (cookies, server logs), and from third parties or publicly available sources (public blockchain, internet).</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">6. How we use your data</h4>
+            <p class="font-semibold text-slate-800">Lawful Basis:</p>
+            <p>We process your personal data based on: (1) performance of a contract, (2) legitimate interests, or (3) your consent.</p>
+            <p class="font-semibold text-slate-800 mt-2">Key Purposes:</p>
+            <ul class="list-disc list-inside space-y-0.5 mt-1 text-slate-600">
+              <li>Register you as a new customer</li>
+              <li>Process and deliver our Services</li>
+              <li>Prevent abuse of our Services</li>
+              <li>Manage our relationship with you</li>
+              <li>Process payments and manage fees</li>
+              <li>Comply with legal obligations</li>
+              <li>Analyze and improve our Services</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">7. Disclosure of Your data</h4>
+            <p>We share your personal data with third-party service providers, agents, regulatory authorities, and other organizations as necessary to provide the Services and comply with legal obligations.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">8. International transfers</h4>
+            <p>We transfer your personal data outside India with appropriate safeguards to ensure adequate protection.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">9. Data Security</h4>
+            <p>We implement appropriate organizational, technical, and security measures to protect your personal data including encryption, pseudonymization, and regular backups.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">10. Data Retention</h4>
+            <p>We retain personal data for as long as necessary to fulfill the purposes for which it was collected, comply with legal obligations, or resolve disputes. Specific retention periods vary based on data type and purpose.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">11. Your Legal Rights</h4>
+            <p>You have the right to:</p>
+            <ul class="list-disc list-inside space-y-0.5 mt-1 text-slate-600">
+              <li>Request access to your personal data</li>
+              <li>Request rectification of inaccurate data</li>
+              <li>Request erasure of your personal data</li>
+              <li>Object to processing of your data</li>
+              <li>Request restriction of processing</li>
+              <li>Request transfer of your data</li>
+              <li>Withdraw consent at any time</li>
+              <li>File a complaint with relevant authorities</li>
+            </ul>
+            <p class="mt-2">For more information or to exercise any of these rights, please contact us at <span class="font-mono text-blue-600 font-semibold">eclecttcorpatoutlook.com</span></p>
           </div>
         </div>
       `,
       terms: `
-        <div class="space-y-4">
+        <div class="space-y-4 text-xs leading-relaxed text-slate-600">
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">1. Acceptance of Terms & Institutional Eligibility</h4>
-            <p>By accessing or integrating Credett APIs, SDKs, hosted checkout widgets, or merchant dashboards, you represent that you are an authorized representative of a legally registered corporate entity and agree to be bound by these Terms of Use.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">Introduction</h4>
+            <p>Credett, a brand operating the domain name "Credett.com" and having its registered office at "30 N Gould St Ste R Sheridan, WY 82801", hereinafter referred to as the "Company". By clicking the "Sign Up" button and completing the account registration process, you confirm that you understand and agree to these terms and conditions, together with any documents that may be expressly referred to and are incorporated by reference.</p>
+            <p class="mt-2">Credett.com reserves the right to change or modify these terms at any time and at our sole discretion. By accessing or using the Platform following any change to these Terms, you are regarded as having agreed to the revised Terms.</p>
           </div>
 
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">2. Non-Custodial Payment Gateway & Conversion Routing</h4>
-            <p>Credett provides routing protocols, automated DEX liquidity conversion infrastructure, and webhook notification relays. Merchants acknowledge that blockchain transactions are irreversible once confirmed by network consensus.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">1. Eligibility</h4>
+            <p>You represent and warrant that:</p>
+            <ul class="list-disc list-inside space-y-0.5 mt-1 text-slate-600">
+              <li>You are at least 18 years of age</li>
+              <li>You have the full right, power, and authority to agree to these Terms</li>
+              <li>You are not subject to any financial sanctions or embargoes</li>
+              <li>You are not a citizen or resident of restricted countries</li>
+              <li>You are compliant with all Applicable Laws</li>
+            </ul>
           </div>
 
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">3. Settlement Guarantees & Slippage Protection</h4>
-            <p>Where guaranteed stablecoin settlement is enabled, Credett sources multi-pool liquidity quotes to eliminate volatility slippage between order initialization and block validation. Gas fee sponsorship is subject to merchant gateway configuration rules.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">2. Account Creation</h4>
+            <p>You must create an account to use the Credett.com Crypto Payments, Non-fungible token and Crypto Platform. We may require you to provide further information and/or documents. We reserve the right, in our sole discretion, to refuse to provide you with access to the Platform.</p>
           </div>
 
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">4. Prohibited Uses & Restricted Jurisdictions</h4>
-            <p>The gateway may not be utilized for transactions involving sanctioned individuals or entities, unauthorized gambling, illicit darknet marketplaces, or activities violating applicable AML/CFT legislation.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">3. Fees and Payment</h4>
+            <p>You agree to pay all applicable fees and authorize Credett.com to automatically deduct fees from payments to you and/or add fees to your payments. No refunds are permitted on successful Crypto transaction fee payments, Non-fungible token purchases or transactions, as accepted and confirmed by Credett.com in its sole discretion.</p>
           </div>
 
           <div>
-            <h4 class="text-sm font-bold text-slate-900 mb-1">5. Limitation of Liability & Governing Law</h4>
-            <p>These terms shall be governed by and construed in accordance with the substantive laws of Switzerland, with jurisdiction in the courts of the Canton of Zug.</p>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">4. Your Use of the Platform and Conduct</h4>
+            <p>You undertake not to:</p>
+            <ul class="list-disc list-inside space-y-0.5 mt-1 text-slate-600">
+              <li>Use the Platform for unlawful activities or electronic spamming</li>
+              <li>Engage in fraudulent, deceptive, or misleading activities</li>
+              <li>Upload content containing viruses, malware, or harmful code</li>
+              <li>Modify, reverse-engineer, or disassemble the Platform</li>
+              <li>Infringe upon intellectual property rights</li>
+              <li>Damage, disable, or impair the Platform's functionality</li>
+              <li>Gain unauthorized access to other users' accounts</li>
+              <li>Engage in auctions, bidding, contests, or games of chance</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">5. User Content</h4>
+            <p>By providing User Content on the Site, you grant us and our affiliates the right to use, reproduce, modify, perform, display, distribute and disclose such material for any purpose. You represent that you own all necessary rights in your User Content and it complies with these Terms. You are fully responsible for your User Content, including its legality, reliability, and appropriateness.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">6. Intellectual Property Rights</h4>
+            <p>Unless otherwise indicated or User Content, the Site and all content are the proprietary property of Credett.com. All Credett.com logos and product names may not be copied, imitated or used without our prior written permission. We reserve the right to suspend or terminate any Account that has infringed upon intellectual property rights.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">7. Your Ownership of NFTs</h4>
+            <p>When you buy a Sale Item and/or NFT on the Platform, you own it and have the right to sell, display or give it away. You will have a worldwide, perpetual, exclusive, transferable, royalty-free license to use and display the Sale Item, for your own personal, non-commercial use, on the Platform, or on third-party applications that permit your NFT.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">8. Data Protection / Privacy</h4>
+            <p>By using the Platform, you confirm you have read and understood our Privacy Policy. We will only share your Personal Data to facilitate your use of the Platform or if required by law. We reserve the right to request relevant documents and information for preventing fraud and anti-money laundering purposes.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">9. Termination / Account Closure</h4>
+            <p>We reserve the right, without notice and in our sole discretion, to terminate or suspend your access or close your Account at any time for any reason, particularly if we suspect illegal activity, false information, fraudulent activity, or violation of these Terms.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">10. Risks</h4>
+            <p>You understand that your access and use of the Platform is subject to certain risks:</p>
+            <ul class="list-disc list-inside space-y-0.5 mt-1 text-slate-600">
+              <li>Price and liquidity of blockchain assets are extremely volatile</li>
+              <li>Legislative and regulatory changes may adversely affect NFTs</li>
+              <li>NFTs are not legal tender and not backed by any government</li>
+              <li>Transactions are irreversible and losses may not be recoverable</li>
+              <li>NFTs are subject to fraud, counterfeiting, and cyber-attacks</li>
+              <li>Withdrawal to incorrect wallet addresses results in irreversible loss</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">11. Disclaimers</h4>
+            <p>The Site, content, and NFT listings are provided on an "as is" and "as available" basis without warranties. Credett.com makes no claims about the identity, legitimacy, or authenticity of assets on the Platform. We are not liable for any loss from actions taken or reliance on material on the Site, including user errors, server failures, or loss of NFTs.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">12. Limitation of Liability</h4>
+            <p class="font-semibold text-slate-800 uppercase">To the fullest extent permitted by law, Credett.com will not be liable for any lost profit or indirect, consequential, exemplary, incidental, special or punitive damages. The maximum aggregate liability shall not exceed US$100.</p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 mb-1">13. Governing Law and Dispute Resolution</h4>
+            <p>These Terms will be resolved through a two-step Alternate Dispute Resolution mechanism: Mediation (30 days to resolve amicably) and Arbitration (if mediation fails). The arbitration shall be conducted in English with the seat in Wyoming, United States. These Terms are governed by the laws of India.</p>
+            <p class="mt-2 text-slate-500 italic">For the complete Terms and Conditions, including sections on Amendment and Variation, Transfer and Assignment, Severability, Entire Agreement, Waiver, Notices, Third Party Rights, Indemnification, Force Majeure, and Survival, please contact support.</p>
           </div>
         </div>
       `
@@ -1045,6 +1321,92 @@ console.log(<code class="text-emerald-400">'Checkout URL:'</code>, payment.check
         title.innerText = 'Terms of Use';
         icon.innerText = 'gavel';
         content.innerHTML = legalContents.terms;
+      }
+    }
+
+    // ============================================================
+    // CONTACT US MODAL & EMAILJS SUBMISSION
+    // ============================================================
+    function openContactModal() {
+      const timeInput = document.getElementById('contact-form-time');
+      if (timeInput) timeInput.value = new Date().toLocaleString();
+      const statusMsg = document.getElementById('contact-status-msg');
+      if (statusMsg) {
+        statusMsg.classList.add('hidden');
+        statusMsg.innerText = '';
+      }
+      document.getElementById('contact-modal').classList.remove('hidden');
+    }
+
+    function closeContactModal() {
+      document.getElementById('contact-modal').classList.add('hidden');
+    }
+
+    // Close contact modal on backdrop click
+    document.getElementById('contact-modal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'contact-modal') closeContactModal();
+    });
+
+    // Handle Contact Form Submission via EmailJS
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('contact-form');
+      if (form) {
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          const submitBtn = document.getElementById('contact-submit-btn');
+          const btnText = document.getElementById('contact-btn-text');
+          const statusMsg = document.getElementById('contact-status-msg');
+
+          if (submitBtn) submitBtn.disabled = true;
+          if (btnText) btnText.innerText = 'Sending...';
+          if (statusMsg) statusMsg.classList.add('hidden');
+
+          // EmailJS sendForm (service: contact_service, template: contact_form)
+          emailjs.sendForm('service_t2osdl8', 'template_iq4ofl7', this)
+            .then(() => {
+              console.log('SUCCESS!');
+              if (submitBtn) submitBtn.disabled = false;
+              if (btnText) btnText.innerText = 'Send Message';
+              form.reset();
+              if (statusMsg) {
+                statusMsg.className = 'text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-center block';
+                statusMsg.innerText = '✓ Thank you! Your message has been sent successfully.';
+              }
+              if (typeof CredettToast !== 'undefined') {
+                CredettToast.show('Message sent successfully! Our team will contact you shortly.', 'success', 4000);
+              }
+              setTimeout(() => {
+                closeContactModal();
+              }, 2000);
+            }, (error) => {
+              console.log('FAILED...', error);
+              if (submitBtn) submitBtn.disabled = false;
+              if (btnText) btnText.innerText = 'Send Message';
+              if (statusMsg) {
+                statusMsg.className = 'text-xs font-semibold text-red-600 bg-red-50 border border-red-200 p-2.5 rounded-xl text-center block';
+                statusMsg.innerText = '✕ Failed to send message. Please check your connection and try again.';
+              }
+              if (typeof CredettToast !== 'undefined') {
+                CredettToast.show('Failed to send message. Please try again.', 'danger', 4000);
+              }
+            });
+        });
+      }
+    });
+
+    // Mobile Menu Drawer Toggle
+    function toggleMobileMenu(forceState) {
+      const drawer = document.getElementById('mobile-menu-drawer');
+      const icon = document.getElementById('mobile-menu-icon');
+      if (!drawer) return;
+      
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : drawer.classList.contains('hidden');
+      if (shouldOpen) {
+        drawer.classList.remove('hidden');
+        if (icon) icon.innerText = 'close';
+      } else {
+        drawer.classList.add('hidden');
+        if (icon) icon.innerText = 'menu';
       }
     }
 
